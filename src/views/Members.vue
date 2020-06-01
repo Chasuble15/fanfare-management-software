@@ -1,25 +1,13 @@
 <template>
   <div class="members">
-    <table class="table table-bordered">
-      <thead class="thead-light">
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Nom</th>
-          <th scope="col">Prénom</th>
-          <th scope="col">Instrument</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="member in memberList" :key="member.key">
-          <th scope="row">{{ member.key }}</th>
-          <td>{{ member.lastName }}</td>
-          <td>{{ member.firstName }}</td>
-          <td>{{ member.instrument }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="container">
-      <form>
+    <div>
+      <b-table hover bordered head-variant="light" :items="memberList" :fields="fields"></b-table>
+    </div>
+    <div>
+      <b-button id="show-btn" @click="$bvModal.show('bv-modal-example')">Nouveau membre</b-button>
+
+      <b-modal id="bv-modal-example" hide-footer>
+        <template v-slot:modal-title>Nouveau membre</template>
         <div class="form-group">
           <label for="firstName">Prénom</label>
           <input
@@ -50,9 +38,8 @@
             v-model="instrument"
           />
         </div>
-
-        <button type="submit" class="btn btn-primary" @click="addMember">Submit</button>
-      </form>
+        <b-button class="mt-3" block @click="addMember">Valider</b-button>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -65,6 +52,23 @@ export default {
 
   data() {
     return {
+      fields: [
+        {
+          key: "lastName",
+          label: "Nom",
+          sortable: true
+        },
+        {
+          key: "firstName",
+          label: "Prénom",
+          sortable: true
+        },
+        {
+          key: "instrument",
+          label: "Instrument",
+          sortable: true
+        }
+      ],
       memberList: [],
       lastName: "",
       firstName: "",
@@ -85,6 +89,12 @@ export default {
         firstName: this.firstName,
         instrument: this.instrument
       });
+
+      // Hide the modal manually
+      this.$nextTick(() => {
+        this.$bvModal.hide("bv-modal-example");
+      });
+
       this.lastName = "";
       this.firstName = "";
       this.instrument = "";
