@@ -1,18 +1,59 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div>
+      <input type="text" v-model="newReptile" @keyup.enter="addReptile" />
+      <button @click="addReptile">Add Reptile</button>
+    </div>
+    <ul class="reptileList">
+      <li v-for="reptile in reptiles" :key="reptile.name">
+        {{ reptile.name }} -
+        <button @click="deleteReptile(reptile)">Remove</button>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { db } from "../firebase";
 
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
+  name: "home",
+  data() {
+    return {
+      reptiles: [],
+      newReptile: ""
+    };
+  },
+  firestore() {
+    return {
+      reptiles: db.collection("reptiles")
+    };
+  },
+  methods: {
+    addReptile: function() {
+      this.$firestore.reptiles.add({
+        name: this.newReptile,
+        timestamp: new Date()
+      });
+      this.newReptile = "";
+    },
+    deleteReptile: function(reptile) {
+      this.$firestore.reptiles.doc(reptile[".key"]).delete();
+    }
   }
-}
+};
 </script>
+
+<style>
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+.reptileList {
+  list-style: none;
+}
+</style>
