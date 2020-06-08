@@ -49,7 +49,7 @@
         </div>
         <div class="form-group">
           <label for="newInstrument">Instrument</label>
-          <input type="text" class="form-control" id="newInstrument" v-model="infoModal.instrument" />
+          <b-form-select v-model="infoModal.instrument" :options="postsList.posts">Instrument</b-form-select>
         </div>
         <b-row>
           <b-col>
@@ -86,13 +86,11 @@
         </div>
         <div class="form-group">
           <label for="instrument">Instrument</label>
-          <input
-            type="text"
-            class="form-control"
-            id="instrument"
-            placeholder="Instrument"
-            v-model="instrument"
-          />
+          <b-form-select v-model="instrument" :options="postsList.posts">
+            <template v-slot:first>
+              <b-form-select-option :value="null" disabled>-- Choisir un instrument --</b-form-select-option>
+            </template>
+          </b-form-select>
         </div>
         <b-button variant="success" block @click="addMember">Valider</b-button>
       </b-modal>
@@ -129,7 +127,7 @@ export default {
       memberList: [],
       lastName: "",
       firstName: "",
-      instrument: "",
+      instrument: null,
       filter: null,
       infoModal: {
         id: "info-modal",
@@ -138,12 +136,14 @@ export default {
         instrument: "",
         key: ""
       },
-      dMember: {}
+      dMember: {},
+      postsList: {}
     };
   },
   firestore() {
     return {
-      memberList: db.collection("memberList")
+      memberList: db.collection("memberList"),
+      postsList: db.collection("postsList").doc("list")
     };
   },
   methods: {
@@ -164,7 +164,7 @@ export default {
 
           this.lastName = "";
           this.firstName = "";
-          this.instrument = "";
+          this.instrument = null;
         });
     },
     modifyMember() {
@@ -182,7 +182,7 @@ export default {
           //Reset modal
           this.infoModal.firstName = "";
           this.infoModal.lastName = "";
-          this.infoModal.instrument = "";
+          this.infoModal.instrument = null;
           this.infoModal.key = "";
         });
     },
