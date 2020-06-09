@@ -1,44 +1,39 @@
 <template>
   <div class="home">
-    <div>
-      <input type="text" v-model="newReptile" @keyup.enter="addReptile" />
-      <button @click="addReptile">Add Reptile</button>
+    <div v-if="!editing">
+      <span class="text" @click="enableEditing">{{value}}</span>
     </div>
-    <ul class="reptileList">
-      <li v-for="reptile in reptiles" :key="reptile.name">
-        {{ reptile.name }} -
-        <button @click="deleteReptile(reptile)">Remove</button>
-      </li>
-    </ul>
+    <div v-if="editing">
+      <input v-model="tempValue" class="input" />
+      <button @click="disableEditing">Cancel</button>
+      <button @click="saveEdit">Save</button>
+    </div>
   </div>
 </template>
 
 <script>
-import { db } from "../firebase";
-
 export default {
   name: "home",
   data() {
     return {
-      reptiles: [],
-      newReptile: ""
-    };
-  },
-  firestore() {
-    return {
-      reptiles: db.collection("reptiles")
+      value: "Click Me!",
+      tempValue: null,
+      editing: false
     };
   },
   methods: {
-    addReptile: function() {
-      this.$firestore.reptiles.add({
-        name: this.newReptile,
-        timestamp: new Date()
-      });
-      this.newReptile = "";
+    enableEditing: function() {
+      this.tempValue = this.value;
+      this.editing = true;
     },
-    deleteReptile: function(reptile) {
-      this.$firestore.reptiles.doc(reptile[".key"]).delete();
+    disableEditing: function() {
+      this.tempValue = null;
+      this.editing = false;
+    },
+    saveEdit: function() {
+      // However we want to save it to the database
+      this.value = this.tempValue;
+      this.disableEditing();
     }
   }
 };
@@ -52,8 +47,5 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
-.reptileList {
-  list-style: none;
 }
 </style>

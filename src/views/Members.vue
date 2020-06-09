@@ -1,5 +1,6 @@
 <template>
   <div class="members">
+    <h2>Membres</h2>
     <b-col cols="4">
       <b-form-group label-for="filterInput" label-cols-sm="1">
         <b-input-group size="sm">
@@ -27,14 +28,6 @@
             class="mr-1"
           >Modifier</b-button>
           <b-button size="sm" @click="deleteMember(row.item)" class="mr-1">Supprimer</b-button>
-        </template>
-
-        <template v-slot:row-details="row">
-          <b-card>
-            <ul>
-              <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
-            </ul>
-          </b-card>
         </template>
       </b-table>
 

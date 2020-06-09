@@ -1,17 +1,11 @@
 <template>
   <div class="formation">
-    <b-button @click="update">Update</b-button>
+    <!--<b-button @click="update">Update</b-button>-->
     <b-container>
-      <b-row>
-        <b-col>
-          <h2>Liste des postes</h2>
-          <b-list-group>
-            <b-list-group-item v-for="post in postsList.posts" :key="post">{{ post }}</b-list-group-item>
-          </b-list-group>
-        </b-col>
-        <b-col>2 of 3</b-col>
-        <b-col>3 of 3</b-col>
-      </b-row>
+      <h2>Formation</h2>
+      <b-list-group>
+        <b-list-group-item v-for="post in postsList.posts" :key="post">{{ post }}</b-list-group-item>
+      </b-list-group>
     </b-container>
   </div>
 </template>
@@ -57,9 +51,9 @@ export default {
     };
   },
   methods: {
-    update() {
+    /*update() {
       console.log(this.postsList.posts);
-    }
+    }*/
   }
 };
 </script>
