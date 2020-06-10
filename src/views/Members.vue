@@ -1,93 +1,98 @@
 <template>
   <div class="members">
-    <h2>Membres</h2>
-    <b-col cols="4">
-      <b-form-group label-for="filterInput" label-cols-sm="1">
-        <b-input-group size="sm">
-          <b-form-input v-model="filter" type="search" id="filterInput" placeholder="Rechercher..."></b-form-input>
-          <b-input-group-append>
-            <b-button id="show-btn" @click="$bvModal.show('bv-modal-example')">Nouveau membre</b-button>
-          </b-input-group-append>
-        </b-input-group>
-      </b-form-group>
-    </b-col>
+    <h1 class="pa-md-4 mx-lg-auto">Membres</h1>
 
-    <div>
-      <b-table
-        hover
-        bordered
-        head-variant="light"
-        :items="memberList"
-        :fields="fields"
-        :filter="filter"
-      >
-        <template v-slot:cell(actions)="row">
-          <b-button
-            size="sm"
-            @click="info(row.item, row.index, $event.target)"
-            class="mr-1"
-          >Modifier</b-button>
-          <b-button size="sm" @click="deleteMember(row.item)" class="mr-1">Supprimer</b-button>
-        </template>
-      </b-table>
-
-      <b-modal :id="infoModal.id" title="Modifier un membre" hide-footer>
-        <div class="form-group">
-          <label for="firstName">Prénom</label>
-          <input type="text" class="form-control" id="firstName" v-model="infoModal.firstName" />
-        </div>
-        <div class="form-group">
-          <label for="lastName">Nom</label>
-          <input type="text" class="form-control" id="lastName" v-model="infoModal.lastName" />
-        </div>
-        <div class="form-group">
-          <label for="newInstrument">Instrument</label>
-          <b-form-select v-model="infoModal.instrument" :options="postsList.posts">Instrument</b-form-select>
-        </div>
-        <b-row>
-          <b-col>
-            <b-button variant="success" block @click="modifyMember">Modifier</b-button>
-          </b-col>
-          <b-col>
-            <b-button variant="danger" block @click="cancelModify">Annuler</b-button>
-          </b-col>
-        </b-row>
-      </b-modal>
-    </div>
-    <div>
-      <b-modal id="bv-modal-example" hide-footer>
-        <template v-slot:modal-title>Nouveau membre</template>
-        <div class="form-group">
-          <label for="firstName">Prénom</label>
-          <input
-            type="text"
-            class="form-control"
-            id="firstName"
-            placeholder="Prénom"
-            v-model="firstName"
-          />
-        </div>
-        <div class="form-group">
-          <label for="lastName">Nom</label>
-          <input
-            type="text"
-            class="form-control"
-            id="lastName"
-            placeholder="Nom"
-            v-model="lastName"
-          />
-        </div>
-        <div class="form-group">
-          <label for="instrument">Instrument</label>
-          <b-form-select v-model="instrument" :options="postsList.posts">
-            <template v-slot:first>
-              <b-form-select-option :value="null" disabled>-- Choisir un instrument --</b-form-select-option>
+    <v-data-table
+      :items="memberList"
+      :headers="headers"
+      item-key="name"
+      class="elevation-1"
+      :search="filter"
+      disable-pagination
+    >
+      <template v-slot:top>
+        <v-toolbar flat color="white">
+          <v-text-field v-model="filter" type="search" id="filterInput" placeholder="Rechercher..."></v-text-field>
+          <v-spacer></v-spacer>
+          <v-dialog v-model="dialog" max-width="600px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Nouveau membre</v-btn>
             </template>
-          </b-form-select>
-        </div>
-        <b-button variant="success" block @click="addMember">Valider</b-button>
-      </b-modal>
-    </div>
+            <v-card>
+              <v-card-title>
+                <span class="headline">Nouveau membre</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col>
+                      <v-text-field v-model="lastName" label="Nom"></v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-text-field v-model="firstName" label="Prénom"></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col>
+                      <v-combobox v-model="instrument" :items="postsList.posts" label="Instrument"></v-combobox>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="addMember">Ajouter</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      "
+      <template v-slot:item.actions="{ item }">
+        <v-btn @click.stop="info(item)">Modifier</v-btn>
+
+        <v-btn @click="deleteMember(item)">Supprimer</v-btn>
+      </template>
+    </v-data-table>
+
+    <v-dialog v-model="modifDialog" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Modifier membre</span>
+        </v-card-title>
+
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col>
+                <v-text-field v-model="infoModal.lastName" label="Nom"></v-text-field>
+              </v-col>
+              <v-col>
+                <v-text-field v-model="infoModal.firstName" label="Prénom"></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-combobox
+                  v-model="infoModal.instrument"
+                  :items="postsList.posts"
+                  label="Instrument"
+                ></v-combobox>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="modifDialog = false">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="modifyMember">Ajouter</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -99,23 +104,25 @@ export default {
 
   data() {
     return {
-      fields: [
+      dialog: false,
+      modifDialog: false,
+      headers: [
         {
-          key: "lastName",
-          label: "Nom",
+          value: "lastName",
+          text: "Nom",
           sortable: true
         },
         {
-          key: "firstName",
-          label: "Prénom",
+          value: "firstName",
+          text: "Prénom",
           sortable: true
         },
         {
-          key: "instrument",
-          label: "Instrument",
+          value: "instrument",
+          text: "Instrument",
           sortable: true
         },
-        { key: "actions", label: "Actions" }
+        { value: "actions", text: "Actions", sortable: false }
       ],
       memberList: [],
       lastName: "",
@@ -139,6 +146,14 @@ export default {
       postsList: db.collection("postsList").doc("list")
     };
   },
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    modifDialog(val) {
+      val || this.close();
+    }
+  },
   methods: {
     addMember: function() {
       var id = this.memberList.length + 1;
@@ -150,11 +165,7 @@ export default {
           instrument: this.instrument
         })
         .then(() => {
-          // Hide the modal manually
-          this.$nextTick(() => {
-            this.$bvModal.hide("bv-modal-example");
-          });
-
+          this.close();
           this.lastName = "";
           this.firstName = "";
           this.instrument = null;
@@ -169,9 +180,7 @@ export default {
           instrument: this.infoModal.instrument
         })
         .then(() => {
-          this.$nextTick(() => {
-            this.$bvModal.hide(this.infoModal.id);
-          });
+          this.modifDialog = false;
           //Reset modal
           this.infoModal.firstName = "";
           this.infoModal.lastName = "";
@@ -180,25 +189,36 @@ export default {
         });
     },
     cancelModify() {
-      this.$nextTick(() => {
-        this.$bvModal.hide(this.infoModal.id);
-      });
+      this.modifDialog = false;
       //Reset modal
       this.infoModal.firstName = "";
       this.infoModal.lastName = "";
       this.infoModal.instrument = "";
       this.infoModal.key = "";
     },
-    info(item, index, button) {
+    info(item) {
       this.infoModal.firstName = item.firstName;
       this.infoModal.lastName = item.lastName;
       this.infoModal.instrument = item.instrument;
       this.infoModal.key = item[".key"];
-
-      this.$root.$emit("bv::show::modal", this.infoModal.id, button);
+      this.modifDialog = true;
     },
     deleteMember(member) {
       this.$firestore.memberList.doc(member[".key"]).delete();
+    },
+    close() {
+      this.dialog = false;
+      /*this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;*/
+    },
+
+    save() {
+      /* if (this.editedIndex > -1) {
+        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+      } else {
+        this.desserts.push(this.editedItem);
+      }*/
     }
   }
 };

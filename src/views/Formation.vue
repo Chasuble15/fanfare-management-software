@@ -1,12 +1,10 @@
 <template>
   <div class="formation">
     <!--<b-button @click="update">Update</b-button>-->
-    <b-container>
-      <h2>Formation</h2>
-      <b-list-group>
-        <b-list-group-item v-for="post in postsList.posts" :key="post">{{ post }}</b-list-group-item>
-      </b-list-group>
-    </b-container>
+    <h1 class="pa-md-4 mx-lg-auto">Formation</h1>
+    <v-list>
+      <v-list-item-group v-for="post in postsList.posts" :key="post">{{ post }}</v-list-item-group>
+    </v-list>
   </div>
 </template>
 
