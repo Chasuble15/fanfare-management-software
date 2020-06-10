@@ -1,10 +1,40 @@
 <template>
   <div class="formation">
-    <!--<b-button @click="update">Update</b-button>-->
     <h1 class="pa-md-4 mx-lg-auto">Formation</h1>
-    <v-list>
-      <v-list-item-group v-for="post in postsList.posts" :key="post">{{ post }}</v-list-item-group>
-    </v-list>
+    <v-card class="mx-auto" max-width="300" tile>
+      <v-list>
+        <v-list-item-group color="primary">
+          <v-list-item v-for="(post, i) in postsList.posts" :key="i">
+            <v-list-item-content>{{post}}</v-list-item-content>
+            <v-list-item-action>
+              <v-btn icon @click="edit(i)">
+                <v-icon color="grey lighten-1">mdi-pencil</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-card>
+
+    <v-dialog v-model="editor" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Modifier le poste</span>
+        </v-card-title>
+
+        <v-card-text>
+          <v-container>
+            <v-text-field v-model="newPost"></v-text-field>
+          </v-container>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="editor = false">Annuler</v-btn>
+          <v-btn color="blue darken-1" text @click="save">Modifier</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -15,32 +45,12 @@ export default {
 
   data() {
     return {
-      postsList: {}
-
-      /*"Cornet Principal",
-        "Cornet Solo",
-        "Cornet Soprano",
-        "Cornet Répiano",
-        "2e Cornet",
-        "3e Cornet",
-        "Bugle",
-        "Alto Solo",
-        "1er Alto",
-        "2e Alto",
-        "Euphonium Solo",
-        "2e Euphonium",
-        "Baryton Solo",
-        "2e Baryton",
-        "Trombone Solo",
-        "2e Trombone",
-        "Trombone Basse",
-        "Basse Mib Solo",
-        "Basse Mib",
-        "Basse Sib Solo",
-        "Basse Sib",
-        "Percussion",
-        "Tambour",
-        "Fille d'honneur"*/
+      postsList: {
+        posts: []
+      },
+      editor: false,
+      index: 0,
+      newPost: ""
     };
   },
   firestore() {
@@ -49,9 +59,21 @@ export default {
     };
   },
   methods: {
-    /*update() {
-      console.log(this.postsList.posts);
-    }*/
+    edit(index) {
+      this.index = index;
+      this.newPost = this.postsList.posts[index];
+      this.editor = true;
+    },
+    save() {
+      this.postsList.posts[this.index] = this.newPost;
+      this.$firestore.postsList
+        .update({
+          posts: this.postsList.posts
+        })
+        .then(() => {
+          this.editor = false;
+        });
+    }
   }
 };
 </script>

@@ -43,7 +43,7 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="dialog = false">Annuler</v-btn>
                 <v-btn color="blue darken-1" text @click="addMember">Ajouter</v-btn>
               </v-card-actions>
             </v-card>
@@ -52,9 +52,10 @@
       </template>
       "
       <template v-slot:item.actions="{ item }">
-        <v-btn @click.stop="info(item)">Modifier</v-btn>
-
-        <v-btn @click="deleteMember(item)">Supprimer</v-btn>
+        <v-btn-toggle v-model="activeButton" @change="resetActiveButton">
+          <v-btn small @click.stop="info(item)">Modifier</v-btn>
+          <v-btn small @click="deleteMember(item)">Supprimer</v-btn>
+        </v-btn-toggle>
       </template>
     </v-data-table>
 
@@ -88,8 +89,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="modifDialog = false">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="modifyMember">Ajouter</v-btn>
+          <v-btn color="blue darken-1" text @click="modifDialog = false">Annuler</v-btn>
+          <v-btn color="blue darken-1" text @click="modifyMember">Modifier</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -104,6 +105,7 @@ export default {
 
   data() {
     return {
+      activeButton: null,
       dialog: false,
       modifDialog: false,
       headers: [
@@ -146,15 +148,13 @@ export default {
       postsList: db.collection("postsList").doc("list")
     };
   },
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    modifDialog(val) {
-      val || this.close();
-    }
-  },
+
   methods: {
+    resetActiveButton() {
+      this.$nextTick(() => {
+        this.activeButton = null;
+      });
+    },
     addMember: function() {
       var id = this.memberList.length + 1;
       this.$firestore.memberList
@@ -205,20 +205,6 @@ export default {
     },
     deleteMember(member) {
       this.$firestore.memberList.doc(member[".key"]).delete();
-    },
-    close() {
-      this.dialog = false;
-      /*this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;*/
-    },
-
-    save() {
-      /* if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        this.desserts.push(this.editedItem);
-      }*/
     }
   }
 };
