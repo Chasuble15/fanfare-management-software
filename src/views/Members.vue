@@ -165,7 +165,7 @@ export default {
           instrument: this.instrument
         })
         .then(() => {
-          this.close();
+          this.dialog = false;
           this.lastName = "";
           this.firstName = "";
           this.instrument = null;

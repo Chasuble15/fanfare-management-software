@@ -3,18 +3,35 @@
     <v-navigation-drawer app clipped>
       <v-list>
         <v-list-item :to="{path: '/home'}">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item :to="{path: '/members'}">
+          <v-list-item-icon>
+            <v-icon>mdi-account</v-icon>
+          </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>Membres</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item :to="{path: '/formation'}">
+          <v-list-item-icon>
+            <v-icon>mdi-account-group</v-icon>
+          </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>Formation</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item :to="{path: '/transcript'}">
+          <v-list-item-icon>
+            <v-icon>mdi-book-open-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>PV Maker</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
