@@ -1,13 +1,16 @@
 <template>
   <div class="home">
-    <div v-if="!editing">
-      <span class="text" @click="enableEditing">{{value}}</span>
-    </div>
-    <div v-if="editing">
-      <input v-model="tempValue" class="input" />
-      <button @click="disableEditing">Cancel</button>
-      <button @click="saveEdit">Save</button>
-    </div>
+    <v-container grid-list-ms>
+      <h1>Home</h1>Bienvenue sur Fanfare Management Software!
+      <br />Ce site est en cours de développement.
+      <v-list>
+        <b>
+          <v-list-item>Membres : Gestion des membre de la société</v-list-item>
+          <v-list-item>Formation : Modifier la composition de l'ensemble</v-list-item>
+          <v-list-item>PV Maker : Outil de création de PV automatique</v-list-item>
+        </b>
+      </v-list>
+    </v-container>
   </div>
 </template>
 
@@ -15,37 +18,10 @@
 export default {
   name: "home",
   data() {
-    return {
-      value: "Click Me!",
-      tempValue: null,
-      editing: false
-    };
+    return {};
   },
-  methods: {
-    enableEditing: function() {
-      this.tempValue = this.value;
-      this.editing = true;
-    },
-    disableEditing: function() {
-      this.tempValue = null;
-      this.editing = false;
-    },
-    saveEdit: function() {
-      // However we want to save it to the database
-      this.value = this.tempValue;
-      this.disableEditing();
-    }
-  }
+  methods: {}
 };
 </script>
 
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+

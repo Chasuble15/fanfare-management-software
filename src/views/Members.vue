@@ -1,5 +1,5 @@
 <template>
-  <div class="members">
+  <div class="members" style="text-align: center;">
     <h1 class="pa-md-4 mx-lg-auto">Membres</h1>
 
     <v-data-table

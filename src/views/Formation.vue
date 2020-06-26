@@ -1,7 +1,7 @@
 <template>
-  <div class="formation">
+  <div class="formation" style="text-align: center;">
     <h1 class="pa-md-4 mx-lg-auto">Formation</h1>
-    <v-card class="mx-auto" max-width="300" tile>
+    <v-card class="mx-auto" max-width="400" tile>
       <v-list>
         <v-list-item-group color="primary">
           <v-list-item v-for="(post, i) in postsList.posts" :key="i">

@@ -1,5 +1,5 @@
 <template>
-  <div class="transcript">
+  <div class="transcript" style=" text-align: center;">
     <h1 class="pa-md-4 mx-lg-auto">PV Maker</h1>
     <v-card>
       <v-toolbar flat color="blue-grey" dark>
@@ -51,32 +51,87 @@
         <v-subheader>Questions posées</v-subheader>
         <v-container fluid v-for="(question, u) in questions" :key="u">
           <v-card class="mx-auto">
-            <v-card-title>
+            <v-card-title v-if="!questions[u].edit">
               {{question.title}}
-              <v-btn icon @click="editor = !editor">
+              <v-btn icon @click="edit(u)">
                 <v-icon color="grey lighten-1">mdi-pencil</v-icon>
               </v-btn>
             </v-card-title>
+            <v-card-title v-else>
+              <v-row>
+                <v-col>
+                  <v-text-field solo v-model="questions[u].title"></v-text-field>
+                </v-col>
+                <v-col class="text-right">
+                  <v-btn @click="removeBloc(u)" class="mx-2" dark color="red">
+                    <v-icon>mdi-close</v-icon>bloc
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-title>
             <v-list flat subheader>
               <v-list-item-group color="primary">
-                <v-list-item v-for="(post, i) in questions[u].content" :key="i">
+                <v-list-item v-for="(question, i) in questions[u].content" :key="i" :ripple="false">
                   <v-list-item-icon>
                     <v-icon>mdi-circle-medium</v-icon>
                   </v-list-item-icon>
 
-                  <v-list-item-content v-if="!editor" class="d-flex left">{{post}}</v-list-item-content>
+                  <v-list-item-content v-if="!questions[u].edit" class="d-flex left">{{question}}</v-list-item-content>
                   <v-list-item-content v-else class="d-flex left">
-                    <v-textarea dense v-model="question.content[i]" filled></v-textarea>
+                    <v-textarea
+                      dense
+                      v-model="questions[u].content[i]"
+                      filled
+                      append-icon="mdi-close"
+                      @click:append="removeQuestion(u, i)"
+                    ></v-textarea>
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
             </v-list>
+            <v-btn
+              @click="addQuestion(u)"
+              v-show="questions[u].edit"
+              class="mx-2"
+              dark
+              color="indigo"
+            >
+              <v-icon dark>mdi-plus</v-icon>
+            </v-btn>
+            <v-btn
+              @click="edit(u)"
+              v-show="questions[u].edit"
+              color="blue-grey"
+              dark
+              class="my-6"
+            >Valider</v-btn>
           </v-card>
         </v-container>
-
+        <v-btn @click="addBloc" class="mx-2" dark color="indigo">
+          <v-icon>mdi-plus</v-icon>bloc
+        </v-btn>
+        <v-subheader>Tâches à effectuer prochainement</v-subheader>
+        <v-data-table dense hide-default-footer :items="items" :headers="headers" disable-sort>
+          <template v-slot:item.0="{ item }">
+            <v-text-field placeholder="Nom..." filled dense v-model="item['0']"></v-text-field>
+          </template>
+          <template v-slot:item.1="{ item}">
+            <v-textarea
+              placeholder="Tâche..."
+              dense
+              v-model="item['1']"
+              append-icon="mdi-close"
+              @click:append="removeTask(item)"
+            ></v-textarea>
+          </template>
+        </v-data-table>
+        <v-btn @click="addTask" class="mx-2" dark color="indigo">
+          <v-icon>mdi-plus</v-icon>tâche
+        </v-btn>
+        <v-subheader>Prochaine réunion</v-subheader>
+        <v-textarea v-model="nextReunion" filled></v-textarea>
         <v-divider class="my-2"></v-divider>
-
-        <v-btn color="blue-grey" dark @click="createPDF">Create PDF</v-btn>
+        <v-btn color="blue-grey" class="text-center" dark @click="createPDF">Create PDF</v-btn>
       </v-card-text>
     </v-card>
   </div>
@@ -87,21 +142,22 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { RobotoRegular, RobotoBold } from "../fonts.js";
 
-/*function textBloc(title, content) {
+function textBloc(title, content) {
   this.title = title;
   this.content = content;
-}*/
+  this.edit = true;
+}
 
 export default {
   name: "transcript",
   data() {
     return {
-      editor: false,
       pdfName: "Procès-Verbal",
       society: "Jeunesse de Chamoson",
       heure: "20h",
       date: "09 novembre 2018",
       lieu: "chez Olivier",
+      nextReunion: "A définir...",
       membres: [
         {
           name: "David Carrupt",
@@ -134,7 +190,8 @@ export default {
             "Vin : pas besoin d’acheter, stock.",
             "Sponsors : Raiffaisen (David), Menuiserie Carr. (David), Charlie Moulin (Nicolas), ESC (Olivier), Dom Rénovation (Jordan), Garage des Plantys(Olivier), Valelectric (David), Fuchs (Clémence), Atra SA (Rémy) Martin Michel Transport (Rémy), Haut de Cry Paysage (Crettenand), Favre Alain Transport (Sylvain), CX (Olivier).",
             "Doodle :  pour les bénévoles. Caisse, bar, nourriture. 17h-20h-23h-02h. Besoin de monde pour le montage. 2p. caisse, bar 3-4 p., food 2-4 p. "
-          ]
+          ],
+          edit: false
         },
         {
           title: "Divers",
@@ -143,26 +200,38 @@ export default {
             "Noss : coup de main et mise en place et rangement le lendemain.",
             "Assemblée générale et souper : samedi 2 février",
             "Carnaval : 4 mars"
-          ]
+          ],
+          edit: false
         }
       ],
-      taches: [
-        [
-          "David",
-          "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation"
-        ],
-        [
-          "Clémence",
-          "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation"
-        ],
-        [
-          "Julien",
-          "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation"
-        ],
-        [
-          "Tous",
-          "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation."
-        ]
+      headers: [
+        {
+          text: "Membre",
+          value: "0",
+          width: "200px"
+        },
+        {
+          text: "Tâche",
+          value: "1"
+        }
+      ],
+      items: [
+        {
+          0: "David",
+          1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation"
+        },
+        {
+          0: "Clémence",
+          1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation"
+        },
+        {
+          0: "Julien",
+          1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation"
+        },
+        {
+          0: "Tous",
+          1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation."
+        }
       ]
     };
   },
@@ -176,12 +245,43 @@ export default {
       }
       temp = temp.substring(0, temp.length - 2);
       return (temp += ".");
+    },
+    taches() {
+      var temp = [];
+      this.items.forEach(element => {
+        temp.push(Object.assign([], element));
+      });
+      return temp;
     }
   },
   methods: {
     edit(index) {
-      this.editor = true;
-      console.log(index);
+      this.questions[index].edit = !this.questions[index].edit;
+    },
+    addQuestion(index) {
+      this.questions[index].content.push("");
+    },
+    removeQuestion(index1, index2) {
+      confirm("Are you sure you want to delete this item?") &&
+        this.questions[index1].content.splice(index2, 1);
+    },
+    addBloc() {
+      this.questions.push(new textBloc("Nouveau bloc", ["Premier élément"]));
+    },
+    removeBloc(index) {
+      confirm("Are you sure you want to delete this item?") &&
+        this.questions.splice(index, 1);
+    },
+    addTask() {
+      this.items.push({
+        0: "",
+        1: ""
+      });
+    },
+    removeTask(item) {
+      const index = this.items.indexOf(item);
+      confirm("Are you sure you want to delete this item?") &&
+        this.items.splice(index, 1);
     },
     createPDF() {
       var doc = new jsPDF();
@@ -318,7 +418,7 @@ export default {
 
       doc.setFontStyle("normal");
       doc.setFontSize(12);
-      doc.text(doc.splitTextToSize(`A définir.`, 160), 25, h);
+      doc.text(doc.splitTextToSize(this.nextReunion, 160), 25, h);
       //doc.save(this.pdfName + ".pdf");
       doc.output("dataurlnewwindow");
     }

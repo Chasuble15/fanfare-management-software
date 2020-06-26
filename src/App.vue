@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer app clipped>
       <v-list>
-        <v-list-item :to="{path: '/home'}">
+        <v-list-item :to="{path: '/'}">
           <v-list-item-icon>
             <v-icon>mdi-home</v-icon>
           </v-list-item-icon>
