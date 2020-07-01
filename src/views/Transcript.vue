@@ -1,9 +1,11 @@
 <template>
-  <div class="transcript" style=" text-align: center;">
+  <div class="transcript" style="text-align: center;">
     <h1 class="pa-md-4 mx-lg-auto">PV Maker</h1>
     <v-card>
       <v-toolbar flat color="blue-grey" dark>
         <v-toolbar-title>Réunion du comité</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn @click="clearData">Clear les champs</v-btn>
       </v-toolbar>
 
       <v-card-text>
@@ -282,6 +284,15 @@ export default {
       const index = this.items.indexOf(item);
       confirm("Are you sure you want to delete this item?") &&
         this.items.splice(index, 1);
+    },
+    clearData() {
+      this.society = "";
+      this.heure = "";
+      this.date = "";
+      this.lieu = "";
+      this.nextReunion = "";
+      this.questions = [];
+      this.items = [];
     },
     createPDF() {
       var doc = new jsPDF();

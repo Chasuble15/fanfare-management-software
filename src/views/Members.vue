@@ -24,20 +24,22 @@
               </v-card-title>
 
               <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col>
-                      <v-text-field v-model="lastName" label="Nom"></v-text-field>
-                    </v-col>
-                    <v-col>
-                      <v-text-field v-model="firstName" label="Prénom"></v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col>
-                      <v-combobox v-model="instrument" :items="postsList.posts" label="Instrument"></v-combobox>
-                    </v-col>
-                  </v-row>
+                <v-container fluid>
+                  <v-text-field v-model="lastName" label="Nom"></v-text-field>
+
+                  <v-text-field v-model="firstName" label="Prénom"></v-text-field>
+
+                  <v-combobox v-model="instrument" :items="postsList.posts" label="Instrument"></v-combobox>
+
+                  <v-text-field
+                    v-model="birthday"
+                    label="Date de naissance"
+                    hint="MM/DD/YYYY format"
+                    persistent-hint
+                    @blur="date = parseDate(dateFormatted)"
+                  ></v-text-field>
+
+                  <v-text-field v-model="entry" label="Date d'entrée"></v-text-field>
                 </v-container>
               </v-card-text>
 
@@ -109,33 +111,27 @@ export default {
       dialog: false,
       modifDialog: false,
       headers: [
-        {
-          value: "lastName",
-          text: "Nom",
-          sortable: true
-        },
-        {
-          value: "firstName",
-          text: "Prénom",
-          sortable: true
-        },
-        {
-          value: "instrument",
-          text: "Instrument",
-          sortable: true
-        },
+        { value: "firstName", text: "Prénom", sortable: true },
+        { value: "lastName", text: "Nom", sortable: true },
+        { value: "instrument", text: "Instrument", sortable: true },
+        { value: "birthday", text: "Date de naissance", sortable: true },
+        { value: "entry", text: "Date d'entrée", sortable: true },
         { value: "actions", text: "Actions", sortable: false }
       ],
       memberList: [],
       lastName: "",
       firstName: "",
       instrument: null,
+      birthday: "",
+      entry: "",
       filter: null,
       infoModal: {
         id: "info-modal",
         firstName: "",
         lastName: "",
         instrument: "",
+        birthday: "",
+        entry: "",
         key: ""
       },
       dMember: {},
@@ -162,13 +158,17 @@ export default {
           id: id,
           lastName: this.lastName,
           firstName: this.firstName,
-          instrument: this.instrument
+          instrument: this.instrument,
+          birthday: this.birthday,
+          entry: this.entry
         })
         .then(() => {
           this.dialog = false;
           this.lastName = "";
           this.firstName = "";
           this.instrument = null;
+          this.birthday = "";
+          this.entry = "";
         });
     },
     modifyMember() {
@@ -177,7 +177,9 @@ export default {
         .update({
           firstName: this.infoModal.firstName,
           lastName: this.infoModal.lastName,
-          instrument: this.infoModal.instrument
+          instrument: this.infoModal.instrument,
+          birthday: this.infoModal.birthday,
+          entry: this.infoModal.entry
         })
         .then(() => {
           this.modifDialog = false;
@@ -186,6 +188,8 @@ export default {
           this.infoModal.lastName = "";
           this.infoModal.instrument = null;
           this.infoModal.key = "";
+          this.infoModal.birthday = "";
+          this.infoModal.entry = "";
         });
     },
     cancelModify() {
@@ -195,16 +199,21 @@ export default {
       this.infoModal.lastName = "";
       this.infoModal.instrument = "";
       this.infoModal.key = "";
+      this.infoModal.birthday = "";
+      this.infoModal.entry = "";
     },
     info(item) {
       this.infoModal.firstName = item.firstName;
       this.infoModal.lastName = item.lastName;
       this.infoModal.instrument = item.instrument;
+      this.infoModal.birthday = item.birthday;
+      this.infoModal.entry = item.entry;
       this.infoModal.key = item[".key"];
       this.modifDialog = true;
     },
     deleteMember(member) {
-      this.$firestore.memberList.doc(member[".key"]).delete();
+      confirm("Are you sure you want to delete this item?") &&
+        this.$firestore.memberList.doc(member[".key"]).delete();
     }
   }
 };
