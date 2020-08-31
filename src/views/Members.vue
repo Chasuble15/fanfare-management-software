@@ -29,7 +29,9 @@
 
                   <v-text-field v-model="firstName" label="Prénom"></v-text-field>
 
-                  <v-combobox v-model="instrument" :items="postsList.posts" label="Instrument"></v-combobox>
+                  <v-combobox v-model="post" :items="postsList.posts" label="Poste"></v-combobox>
+
+                  <v-text-field v-model="email" label="Email"></v-text-field>
 
                   <v-text-field
                     v-model="birthday"
@@ -39,7 +41,13 @@
                     @blur="date = parseDate(dateFormatted)"
                   ></v-text-field>
 
-                  <v-text-field v-model="entry" label="Date d'entrée"></v-text-field>
+                  <v-text-field
+                    v-model="entry"
+                    label="Date d'entrée"
+                    hint="MM/DD/YYYY format"
+                    persistent-hint
+                    @blur="date = parseDate(dateFormatted)"
+                  ></v-text-field>
                 </v-container>
               </v-card-text>
 
@@ -79,13 +87,26 @@
             </v-row>
             <v-row>
               <v-col>
-                <v-combobox
-                  v-model="infoModal.instrument"
-                  :items="postsList.posts"
-                  label="Instrument"
-                ></v-combobox>
+                <v-combobox v-model="infoModal.post" :items="postsList.posts" label="Poste"></v-combobox>
               </v-col>
             </v-row>
+            <v-text-field v-model="infoModal.email" label="Email"></v-text-field>
+
+            <v-text-field
+              v-model="infoModal.birthday"
+              label="Date de naissance"
+              hint="MM/DD/YYYY format"
+              persistent-hint
+              @blur="date = parseDate(dateFormatted)"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="infoModal.entry"
+              label="Date d'entrée"
+              hint="MM/DD/YYYY format"
+              persistent-hint
+              @blur="date = parseDate(dateFormatted)"
+            ></v-text-field>
           </v-container>
         </v-card-text>
 
@@ -113,7 +134,8 @@ export default {
       headers: [
         { value: "firstName", text: "Prénom", sortable: true },
         { value: "lastName", text: "Nom", sortable: true },
-        { value: "instrument", text: "Instrument", sortable: true },
+        { value: "post", text: "Poste", sortable: true },
+        { value: "email", text: "Email", sortable: true },
         { value: "birthday", text: "Date de naissance", sortable: true },
         { value: "entry", text: "Date d'entrée", sortable: true },
         { value: "actions", text: "Actions", sortable: false }
@@ -121,7 +143,8 @@ export default {
       memberList: [],
       lastName: "",
       firstName: "",
-      instrument: null,
+      post: null,
+      email: "",
       birthday: "",
       entry: "",
       filter: null,
@@ -129,7 +152,8 @@ export default {
         id: "info-modal",
         firstName: "",
         lastName: "",
-        instrument: "",
+        post: "",
+        email: "",
         birthday: "",
         entry: "",
         key: ""
@@ -158,7 +182,8 @@ export default {
           id: id,
           lastName: this.lastName,
           firstName: this.firstName,
-          instrument: this.instrument,
+          post: this.post,
+          email: this.email,
           birthday: this.birthday,
           entry: this.entry
         })
@@ -166,7 +191,8 @@ export default {
           this.dialog = false;
           this.lastName = "";
           this.firstName = "";
-          this.instrument = null;
+          this.post = null;
+          this.email = "";
           this.birthday = "";
           this.entry = "";
         });
@@ -177,7 +203,8 @@ export default {
         .update({
           firstName: this.infoModal.firstName,
           lastName: this.infoModal.lastName,
-          instrument: this.infoModal.instrument,
+          post: this.infoModal.post,
+          email: this.infoModal.email,
           birthday: this.infoModal.birthday,
           entry: this.infoModal.entry
         })
@@ -186,7 +213,8 @@ export default {
           //Reset modal
           this.infoModal.firstName = "";
           this.infoModal.lastName = "";
-          this.infoModal.instrument = null;
+          this.infoModal.post = null;
+          this.infoModal.email = "";
           this.infoModal.key = "";
           this.infoModal.birthday = "";
           this.infoModal.entry = "";
@@ -197,7 +225,8 @@ export default {
       //Reset modal
       this.infoModal.firstName = "";
       this.infoModal.lastName = "";
-      this.infoModal.instrument = "";
+      this.infoModal.post = "";
+      this.infoModal.email = "";
       this.infoModal.key = "";
       this.infoModal.birthday = "";
       this.infoModal.entry = "";
@@ -205,7 +234,8 @@ export default {
     info(item) {
       this.infoModal.firstName = item.firstName;
       this.infoModal.lastName = item.lastName;
-      this.infoModal.instrument = item.instrument;
+      this.infoModal.post = item.post;
+      this.infoModal.email = item.email;
       this.infoModal.birthday = item.birthday;
       this.infoModal.entry = item.entry;
       this.infoModal.key = item[".key"];
