@@ -1,7 +1,7 @@
 <template>
   <div class="members" style="text-align: center;">
     <h1 class="pa-md-4 mx-lg-auto">Membres</h1>
-
+    <v-btn @click="test">Test</v-btn>
     <v-data-table
       :items="memberList"
       :headers="headers"
@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import { db } from "../firebase";
+import { db, st } from "../firebase";
 
 export default {
   name: "Members",
@@ -159,7 +159,8 @@ export default {
         key: ""
       },
       dMember: {},
-      postsList: {}
+      postsList: {},
+      benoit: ""
     };
   },
   firestore() {
@@ -168,8 +169,10 @@ export default {
       postsList: db.collection("postsList").doc("list")
     };
   },
-
   methods: {
+    test() {
+      console.log(st.child("benoit.png"));
+    },
     resetActiveButton() {
       this.$nextTick(() => {
         this.activeButton = null;
