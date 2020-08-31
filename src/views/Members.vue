@@ -1,7 +1,11 @@
 <template>
   <div class="members" style="text-align: center;">
     <h1 class="pa-md-4 mx-lg-auto">Membres</h1>
-    <v-btn @click="test">Test</v-btn>
+
+    <input type="file" @change="uploadImage" />
+
+    <v-img :src="photo"></v-img>
+
     <v-data-table
       :items="memberList"
       :headers="headers"
@@ -138,7 +142,7 @@ export default {
         { value: "email", text: "Email", sortable: true },
         { value: "birthday", text: "Date de naissance", sortable: true },
         { value: "entry", text: "Date d'entrée", sortable: true },
-        { value: "actions", text: "Actions", sortable: false }
+        { value: "actions", text: "Actions", sortable: false },
       ],
       memberList: [],
       lastName: "",
@@ -156,29 +160,45 @@ export default {
         email: "",
         birthday: "",
         entry: "",
-        key: ""
+        key: "",
       },
       dMember: {},
       postsList: {},
-      benoit: ""
+      image: null,
     };
   },
   firestore() {
     return {
       memberList: db.collection("memberList"),
-      postsList: db.collection("postsList").doc("list")
+      postsList: db.collection("postsList").doc("list"),
     };
   },
+  computed() {
+    this.image = st.ref("photo_membre/test.png");
+  },
   methods: {
-    test() {
-      console.log(st.child("benoit.png"));
+    uploadImage(event) {
+      let file = event.target.files[0];
+
+      var storageRef = st.ref("photo_membre/" + file.name);
+
+      let uploadTask = storageRef.put(file);
+      uploadTask.on(
+        "state_changed", // or 'state_changed'
+        () => {
+          // Upload completed successfully, now we can get the download URL
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            this.image = downloadURL;
+          });
+        }
+      );
     },
     resetActiveButton() {
       this.$nextTick(() => {
         this.activeButton = null;
       });
     },
-    addMember: function() {
+    addMember: function () {
       var id = this.memberList.length + 1;
       this.$firestore.memberList
         .add({
@@ -188,7 +208,7 @@ export default {
           post: this.post,
           email: this.email,
           birthday: this.birthday,
-          entry: this.entry
+          entry: this.entry,
         })
         .then(() => {
           this.dialog = false;
@@ -209,7 +229,7 @@ export default {
           post: this.infoModal.post,
           email: this.infoModal.email,
           birthday: this.infoModal.birthday,
-          entry: this.infoModal.entry
+          entry: this.infoModal.entry,
         })
         .then(() => {
           this.modifDialog = false;
@@ -247,7 +267,7 @@ export default {
     deleteMember(member) {
       confirm("Are you sure you want to delete this item?") &&
         this.$firestore.memberList.doc(member[".key"]).delete();
-    }
-  }
+    },
+  },
 };
 </script>
