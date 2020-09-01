@@ -4,8 +4,6 @@
 
     <input type="file" @change="uploadImage" />
 
-    <v-img :src="photo"></v-img>
-
     <v-data-table
       :items="memberList"
       :headers="headers"
@@ -81,6 +79,9 @@
 
         <v-card-text>
           <v-container>
+            <v-avatar class="ma-3" size="125" tile>
+              <v-img :src="infoModal.avatar"></v-img>
+            </v-avatar>
             <v-row>
               <v-col>
                 <v-text-field v-model="infoModal.lastName" label="Nom"></v-text-field>
@@ -142,7 +143,7 @@ export default {
         { value: "email", text: "Email", sortable: true },
         { value: "birthday", text: "Date de naissance", sortable: true },
         { value: "entry", text: "Date d'entrée", sortable: true },
-        { value: "actions", text: "Actions", sortable: false },
+        { value: "actions", text: "Actions", sortable: false }
       ],
       memberList: [],
       lastName: "",
@@ -153,6 +154,7 @@ export default {
       entry: "",
       filter: null,
       infoModal: {
+        avatar: "",
         id: "info-modal",
         firstName: "",
         lastName: "",
@@ -160,21 +162,17 @@ export default {
         email: "",
         birthday: "",
         entry: "",
-        key: "",
+        key: ""
       },
       dMember: {},
-      postsList: {},
-      image: null,
+      postsList: {}
     };
   },
   firestore() {
     return {
       memberList: db.collection("memberList"),
-      postsList: db.collection("postsList").doc("list"),
+      postsList: db.collection("postsList").doc("list")
     };
-  },
-  computed() {
-    this.image = st.ref("photo_membre/test.png");
   },
   methods: {
     uploadImage(event) {
@@ -187,8 +185,8 @@ export default {
         "state_changed", // or 'state_changed'
         () => {
           // Upload completed successfully, now we can get the download URL
-          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            this.image = downloadURL;
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            console.log(downloadURL);
           });
         }
       );
@@ -198,7 +196,7 @@ export default {
         this.activeButton = null;
       });
     },
-    addMember: function () {
+    addMember: function() {
       var id = this.memberList.length + 1;
       this.$firestore.memberList
         .add({
@@ -208,7 +206,7 @@ export default {
           post: this.post,
           email: this.email,
           birthday: this.birthday,
-          entry: this.entry,
+          entry: this.entry
         })
         .then(() => {
           this.dialog = false;
@@ -229,7 +227,7 @@ export default {
           post: this.infoModal.post,
           email: this.infoModal.email,
           birthday: this.infoModal.birthday,
-          entry: this.infoModal.entry,
+          entry: this.infoModal.entry
         })
         .then(() => {
           this.modifDialog = false;
@@ -255,6 +253,14 @@ export default {
       this.infoModal.entry = "";
     },
     info(item) {
+      st.ref("photo_membre/" + "pic_" + item.id + ".png")
+        .getDownloadURL()
+        .then(downloadURL => {
+          this.infoModal.avatar = downloadURL;
+        })
+        .catch(() => {
+          this.infoModal.avatar = require("@/assets/default.png");
+        });
       this.infoModal.firstName = item.firstName;
       this.infoModal.lastName = item.lastName;
       this.infoModal.post = item.post;
@@ -267,7 +273,7 @@ export default {
     deleteMember(member) {
       confirm("Are you sure you want to delete this item?") &&
         this.$firestore.memberList.doc(member[".key"]).delete();
-    },
-  },
+    }
+  }
 };
 </script>
