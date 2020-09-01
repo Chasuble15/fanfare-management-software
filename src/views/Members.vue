@@ -294,8 +294,15 @@ export default {
       this.modifDialog = true;
     },
     deleteMember(member) {
-      confirm("Are you sure you want to delete this item?") &&
+      var r = confirm("Are you sure you want to delete this item?");
+      if (r == true) {
         this.$firestore.memberList.doc(member[".key"]).delete();
+        var desertRef = st.ref("photo_membre/" + "pic_" + member.id + ".png");
+        // Delete the file
+        desertRef.delete().then(function () {
+          console.log("Image from member deleted successfully");
+        });
+      }
     },
   },
 };
