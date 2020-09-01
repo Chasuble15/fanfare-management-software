@@ -2,8 +2,6 @@
   <div class="members" style="text-align: center;">
     <h1 class="pa-md-4 mx-lg-auto">Membres</h1>
 
-    <input type="file" @change="uploadImage" />
-
     <v-data-table
       :items="memberList"
       :headers="headers"
@@ -82,6 +80,17 @@
             <v-avatar class="ma-3" size="125" tile>
               <v-img :src="infoModal.avatar"></v-img>
             </v-avatar>
+
+            <v-file-input
+              ref="fileupload"
+              :rules="rules"
+              accept="image/png, image/jpeg, image/bmp"
+              placeholder="Choisir une photo"
+              prepend-icon="mdi-camera"
+              label="Photo"
+              @change="uploadImage"
+            ></v-file-input>
+
             <v-row>
               <v-col>
                 <v-text-field v-model="infoModal.lastName" label="Nom"></v-text-field>
@@ -133,6 +142,12 @@ export default {
 
   data() {
     return {
+      rules: [
+        (value) =>
+          !value ||
+          value.size < 2000000 ||
+          "Avatar size should be less than 2 MB!",
+      ],
       activeButton: null,
       dialog: false,
       modifDialog: false,
@@ -143,7 +158,7 @@ export default {
         { value: "email", text: "Email", sortable: true },
         { value: "birthday", text: "Date de naissance", sortable: true },
         { value: "entry", text: "Date d'entrée", sortable: true },
-        { value: "actions", text: "Actions", sortable: false }
+        { value: "actions", text: "Actions", sortable: false },
       ],
       memberList: [],
       lastName: "",
@@ -155,38 +170,42 @@ export default {
       filter: null,
       infoModal: {
         avatar: "",
-        id: "info-modal",
+        id: "",
         firstName: "",
         lastName: "",
         post: "",
         email: "",
         birthday: "",
         entry: "",
-        key: ""
+        key: "",
       },
       dMember: {},
-      postsList: {}
+      postsList: {},
     };
   },
   firestore() {
     return {
       memberList: db.collection("memberList"),
-      postsList: db.collection("postsList").doc("list")
+      postsList: db.collection("postsList").doc("list"),
     };
   },
   methods: {
     uploadImage(event) {
-      let file = event.target.files[0];
+      let file = event;
 
-      var storageRef = st.ref("photo_membre/" + file.name);
+      var storageRef = st.ref(
+        "photo_membre/" + "pic_" + this.infoModal.id + ".png"
+      );
 
       let uploadTask = storageRef.put(file);
       uploadTask.on(
         "state_changed", // or 'state_changed'
         () => {
           // Upload completed successfully, now we can get the download URL
-          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            console.log(downloadURL);
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            if (downloadURL) {
+              this.infoModal.avatar = downloadURL;
+            }
           });
         }
       );
@@ -196,7 +215,7 @@ export default {
         this.activeButton = null;
       });
     },
-    addMember: function() {
+    addMember: function () {
       var id = this.memberList.length + 1;
       this.$firestore.memberList
         .add({
@@ -206,7 +225,7 @@ export default {
           post: this.post,
           email: this.email,
           birthday: this.birthday,
-          entry: this.entry
+          entry: this.entry,
         })
         .then(() => {
           this.dialog = false;
@@ -227,7 +246,7 @@ export default {
           post: this.infoModal.post,
           email: this.infoModal.email,
           birthday: this.infoModal.birthday,
-          entry: this.infoModal.entry
+          entry: this.infoModal.entry,
         })
         .then(() => {
           this.modifDialog = false;
@@ -239,6 +258,7 @@ export default {
           this.infoModal.key = "";
           this.infoModal.birthday = "";
           this.infoModal.entry = "";
+          this.infoModal.avatar = "";
         });
     },
     cancelModify() {
@@ -251,11 +271,13 @@ export default {
       this.infoModal.key = "";
       this.infoModal.birthday = "";
       this.infoModal.entry = "";
+      this.infoModal.avatar = "";
     },
+
     info(item) {
       st.ref("photo_membre/" + "pic_" + item.id + ".png")
         .getDownloadURL()
-        .then(downloadURL => {
+        .then((downloadURL) => {
           this.infoModal.avatar = downloadURL;
         })
         .catch(() => {
@@ -268,12 +290,13 @@ export default {
       this.infoModal.birthday = item.birthday;
       this.infoModal.entry = item.entry;
       this.infoModal.key = item[".key"];
+      this.infoModal.id = item.id;
       this.modifDialog = true;
     },
     deleteMember(member) {
       confirm("Are you sure you want to delete this item?") &&
         this.$firestore.memberList.doc(member[".key"]).delete();
-    }
-  }
+    },
+  },
 };
 </script>
