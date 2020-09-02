@@ -3,8 +3,9 @@ import App from './App.vue'
 import router from './router'
 import VueFirestore from 'vue-firestore';
 import vuetify from './plugins/vuetify';
+import JsonExcel from 'vue-json-excel'
 
-
+Vue.component('downloadExcel', JsonExcel)
 
 Vue.config.productionTip = false
 

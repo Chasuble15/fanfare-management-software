@@ -67,6 +67,18 @@
           <v-btn small @click="deleteMember(item)">Supprimer</v-btn>
         </v-btn-toggle>
       </template>
+      <template v-slot:footer>
+        <v-toolbar flat>
+          <download-excel
+            class="export-excel-wrapper"
+            :data="memberList"
+            :fields="json_field"
+            :name="filename"
+          >
+            <v-btn>Exporter vers Excel</v-btn>
+          </download-excel>
+        </v-toolbar>
+      </template>
     </v-data-table>
 
     <v-dialog v-model="modifDialog" max-width="600px">
@@ -143,10 +155,10 @@ export default {
   data() {
     return {
       rules: [
-        (value) =>
+        value =>
           !value ||
           value.size < 2000000 ||
-          "Avatar size should be less than 2 MB!",
+          "Avatar size should be less than 2 MB!"
       ],
       activeButton: null,
       dialog: false,
@@ -158,7 +170,7 @@ export default {
         { value: "email", text: "Email", sortable: true },
         { value: "birthday", text: "Date de naissance", sortable: true },
         { value: "entry", text: "Date d'entrée", sortable: true },
-        { value: "actions", text: "Actions", sortable: false },
+        { value: "actions", text: "Actions", sortable: false }
       ],
       memberList: [],
       lastName: "",
@@ -177,17 +189,39 @@ export default {
         email: "",
         birthday: "",
         entry: "",
-        key: "",
+        key: ""
       },
       dMember: {},
       postsList: {},
+      json_field: {
+        Prenom: "firstName",
+        Nom: "lastName",
+        Poste: "post",
+        Email: "email",
+        "Date de naissance": "birthday",
+        "Date d' entree": "entry"
+      }
     };
   },
   firestore() {
     return {
       memberList: db.collection("memberList"),
-      postsList: db.collection("postsList").doc("list"),
+      postsList: db.collection("postsList").doc("list")
     };
+  },
+  computed: {
+    filename() {
+      const today = new Date();
+      const date =
+        today.getDate() +
+        "_" +
+        (today.getMonth() + 1) +
+        "_" +
+        today.getFullYear();
+      const time = today.getHours() + "h" + today.getMinutes();
+      const dateTime = date + "_" + time;
+      return "Liste_des_membres_" + dateTime;
+    }
   },
   methods: {
     uploadImage(event) {
@@ -202,7 +236,7 @@ export default {
         "state_changed", // or 'state_changed'
         () => {
           // Upload completed successfully, now we can get the download URL
-          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
             if (downloadURL) {
               this.infoModal.avatar = downloadURL;
             }
@@ -215,7 +249,7 @@ export default {
         this.activeButton = null;
       });
     },
-    addMember: function () {
+    addMember: function() {
       var id = this.memberList.length + 1;
       this.$firestore.memberList
         .add({
@@ -225,7 +259,7 @@ export default {
           post: this.post,
           email: this.email,
           birthday: this.birthday,
-          entry: this.entry,
+          entry: this.entry
         })
         .then(() => {
           this.dialog = false;
@@ -246,7 +280,7 @@ export default {
           post: this.infoModal.post,
           email: this.infoModal.email,
           birthday: this.infoModal.birthday,
-          entry: this.infoModal.entry,
+          entry: this.infoModal.entry
         })
         .then(() => {
           this.modifDialog = false;
@@ -277,7 +311,7 @@ export default {
     info(item) {
       st.ref("photo_membre/" + "pic_" + item.id + ".png")
         .getDownloadURL()
-        .then((downloadURL) => {
+        .then(downloadURL => {
           this.infoModal.avatar = downloadURL;
         })
         .catch(() => {
@@ -299,11 +333,11 @@ export default {
         this.$firestore.memberList.doc(member[".key"]).delete();
         var desertRef = st.ref("photo_membre/" + "pic_" + member.id + ".png");
         // Delete the file
-        desertRef.delete().then(function () {
+        desertRef.delete().then(function() {
           console.log("Image from member deleted successfully");
         });
       }
-    },
-  },
+    }
+  }
 };
 </script>

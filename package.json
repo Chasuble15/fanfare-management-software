@@ -18,6 +18,7 @@
     "jspdf-autotable": "^3.5.4",
     "vue": "^2.6.11",
     "vue-firestore": "^0.3.30",
+    "vue-json-excel": "^0.2.98",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11"
   },
