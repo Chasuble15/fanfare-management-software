@@ -34,6 +34,30 @@
             <v-list-item-title>PV Maker</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item :to="{path: '/inventory'}">
+          <v-list-item-icon>
+            <v-icon>mdi-view-list-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Inventaire</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item :to="{path: '/ms'}">
+          <v-list-item-icon>
+            <v-icon>mdi-school</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Ecole de musique</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item :to="{path: '/club'}">
+          <v-list-item-icon>
+            <v-icon>mdi-account-star</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Club des amis</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 

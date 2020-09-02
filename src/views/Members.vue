@@ -14,7 +14,7 @@
         <v-toolbar flat color="white">
           <v-text-field v-model="filter" type="search" id="filterInput" placeholder="Rechercher..."></v-text-field>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="600px">
+          <v-dialog v-model="dialog" max-width="600px" scrollable>
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Nouveau membre</v-btn>
             </template>
@@ -81,7 +81,7 @@
       </template>
     </v-data-table>
 
-    <v-dialog v-model="modifDialog" max-width="600px">
+    <v-dialog v-model="modifDialog" max-width="600px" scrollable>
       <v-card>
         <v-card-title>
           <span class="headline">Modifier membre</span>
@@ -328,7 +328,13 @@ export default {
       this.modifDialog = true;
     },
     deleteMember(member) {
-      var r = confirm("Are you sure you want to delete this item?");
+      var r = confirm(
+        "Êtes-vous sûr de vouloir supprimer " +
+          member.firstName +
+          " " +
+          member.lastName +
+          " ?"
+      );
       if (r == true) {
         this.$firestore.memberList.doc(member[".key"]).delete();
         var desertRef = st.ref("photo_membre/" + "pic_" + member.id + ".png");
