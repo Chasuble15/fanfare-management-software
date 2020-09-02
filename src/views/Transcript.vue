@@ -308,7 +308,7 @@ export default {
     },
     addBloc() {
       this.comityData.questions.push(
-        new textBloc("Nouveau bloc", ["Premier élément"])
+        new textBloc("Titre du bloc", ["Premier élément"])
       );
     },
     removeBloc(index) {
