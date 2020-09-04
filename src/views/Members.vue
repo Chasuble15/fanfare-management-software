@@ -24,7 +24,20 @@
               </v-card-title>
 
               <v-card-text>
-                <v-container fluid>
+                <v-container>
+                  <v-avatar class="ma-3" size="125" tile>
+                    <v-img :src="avatar"></v-img>
+                  </v-avatar>
+
+                  <v-file-input
+                    ref="fileupload"
+                    :rules="rules"
+                    accept="image/png, image/jpeg, image/bmp"
+                    placeholder="Choisir une photo"
+                    prepend-icon="mdi-camera"
+                    label="Photo"
+                    @change="uploadImageNew"
+                  ></v-file-input>
                   <v-text-field v-model="lastName" label="Nom"></v-text-field>
 
                   <v-text-field v-model="firstName" label="Prénom"></v-text-field>
@@ -181,7 +194,7 @@ export default {
       entry: "",
       filter: null,
       infoModal: {
-        avatar: "",
+        avatar: require("@/assets/default.png"),
         id: "",
         firstName: "",
         lastName: "",
@@ -200,7 +213,8 @@ export default {
         Email: "email",
         "Date de naissance": "birthday",
         "Date d' entree": "entry"
-      }
+      },
+      avatar: require("@/assets/default.png")
     };
   },
   firestore() {
@@ -244,12 +258,32 @@ export default {
         }
       );
     },
+    uploadImageNew(event) {
+      let file = event;
+
+      var storageRef = st.ref(
+        "photo_membre/" + "pic_" + (this.memberList.length + 1) + ".png"
+      );
+
+      let uploadTask = storageRef.put(file);
+      uploadTask.on(
+        "state_changed", // or 'state_changed'
+        () => {
+          // Upload completed successfully, now we can get the download URL
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            if (downloadURL) {
+              this.avatar = downloadURL;
+            }
+          });
+        }
+      );
+    },
     resetActiveButton() {
       this.$nextTick(() => {
         this.activeButton = null;
       });
     },
-    addMember: function() {
+    addMember() {
       var id = this.memberList.length + 1;
       this.$firestore.memberList
         .add({
@@ -269,6 +303,7 @@ export default {
           this.email = "";
           this.birthday = "";
           this.entry = "";
+          this.avatar = require("@/assets/default.png");
         });
     },
     modifyMember() {

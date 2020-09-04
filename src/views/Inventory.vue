@@ -30,9 +30,9 @@
 
                   <v-text-field v-model="service" label="Dernier service"></v-text-field>
 
-                  <v-slider v-model="state" min="-100" max="100" label="Etat"></v-slider>
+                  <v-slider v-model="state" min="0" max="100" label="Etat"></v-slider>
 
-                  <v-checkbox v-model="busy" label="Occupé ?"></v-checkbox>
+                  <v-checkbox v-model="free" label="Occupé ?"></v-checkbox>
                 </v-container>
               </v-card-text>
 
@@ -44,6 +44,15 @@
             </v-card>
           </v-dialog>
         </v-toolbar>
+      </template>
+
+      <template v-slot:item.free="{ item }">
+        <v-icon v-if="!item.free" color="teal">mdi-check</v-icon>
+        <v-icon v-else color="pink">mdi-close</v-icon>
+      </template>
+
+      <template v-slot:item.state="{ item }">
+        <v-progress-circular :rotate="360" :size="20" :width="4" :value="item.state" color="teal"></v-progress-circular>
       </template>
     </v-data-table>
   </div>
@@ -61,7 +70,7 @@ export default {
         { value: "serial", text: "N° de série", sortable: true },
         { value: "state", text: "Etat", sortable: true },
         { value: "service", text: "Dernier service", sortable: true },
-        { value: "busy", text: "Occupé", sortable: true }
+        { value: "free", text: "Libre", sortable: true }
       ],
       instrumentList: [],
       filter: null,
@@ -70,7 +79,7 @@ export default {
       serial: "",
       state: "",
       service: "",
-      busy: false
+      free: true
     };
   },
   firestore() {
@@ -88,14 +97,14 @@ export default {
           serial: this.serial,
           state: this.state,
           service: this.service,
-          busy: this.busy
+          free: this.free
         })
         .then(() => {
           this.name = "";
           this.serial = "";
           this.state = "";
           this.service = null;
-          this.busy = false;
+          this.free = false;
           this.dialog = false;
         });
     }
