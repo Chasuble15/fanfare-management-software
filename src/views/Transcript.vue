@@ -9,7 +9,6 @@
         <v-spacer></v-spacer>
         <v-btn @click="clearData">Clear les champs</v-btn>
       </v-toolbar>
-
       <v-card-text>
         <v-row>
           <v-col>
@@ -195,7 +194,7 @@ export default {
         nextReunion: "",
         questions: [],
         items: [],
-        membres: []
+        membres: [],
       },
       exampleData: {
         pdfName: "Procès-Verbal",
@@ -209,7 +208,7 @@ export default {
           "Olivier Carruzzo",
           "Julien Dénis",
           "Nicolas Carrupt",
-          "Clémence Thurre"
+          "Clémence Thurre",
         ],
         questions: [
           {
@@ -220,9 +219,9 @@ export default {
               "Feldschlosschen : tireuse, blanche et blonde.",
               "Vin : pas besoin d’acheter, stock.",
               "Sponsors : Raiffaisen (David), Menuiserie Carr. (David), Charlie Moulin (Nicolas), ESC (Olivier), Dom Rénovation (Jordan), Garage des Plantys(Olivier), Valelectric (David), Fuchs (Clémence), Atra SA (Rémy) Martin Michel Transport (Rémy), Haut de Cry Paysage (Crettenand), Favre Alain Transport (Sylvain), CX (Olivier).",
-              "Doodle :  pour les bénévoles. Caisse, bar, nourriture. 17h-20h-23h-02h. Besoin de monde pour le montage. 2p. caisse, bar 3-4 p., food 2-4 p. "
+              "Doodle :  pour les bénévoles. Caisse, bar, nourriture. 17h-20h-23h-02h. Besoin de monde pour le montage. 2p. caisse, bar 3-4 p., food 2-4 p. ",
             ],
-            edit: false
+            edit: false,
           },
           {
             title: "Divers",
@@ -230,42 +229,42 @@ export default {
               "Téléthon : 6 personnes.",
               "Noss : coup de main et mise en place et rangement le lendemain.",
               "Assemblée générale et souper : samedi 2 février",
-              "Carnaval : 4 mars"
+              "Carnaval : 4 mars",
             ],
-            edit: false
-          }
+            edit: false,
+          },
         ],
         headers: [
           {
             text: "Membre",
             value: "0",
-            width: "200px"
+            width: "200px",
           },
           {
             text: "Tâche",
-            value: "1"
-          }
+            value: "1",
+          },
         ],
         items: [
           {
             0: "David",
-            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation"
+            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation",
           },
           {
             0: "Clémence",
-            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation"
+            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation",
           },
           {
             0: "Julien",
-            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation"
+            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation",
           },
           {
             0: "Tous",
-            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation."
-          }
-        ]
+            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation.",
+          },
+        ],
       },
-      comityData: {}
+      comityData: {},
     };
   },
 
@@ -280,15 +279,15 @@ export default {
     },
     taches() {
       var temp = [];
-      this.comityData.items.forEach(element => {
+      this.comityData.items.forEach((element) => {
         temp.push(Object.assign([], element));
       });
       return temp;
-    }
+    },
   },
   firestore() {
     return {
-      comityData: db.collection("comityData").doc("data")
+      comityData: db.collection("comityData").doc("data"),
     };
   },
   methods: {
@@ -318,7 +317,7 @@ export default {
     addTask() {
       this.comityData.items.push({
         0: "",
-        1: ""
+        1: "",
       });
     },
     removeTask(item) {
@@ -452,20 +451,20 @@ export default {
             halign: "left",
             textColor: [0, 0, 0],
             fontSize: 12,
-            lineColor: [100, 100, 100]
+            lineColor: [100, 100, 100],
           },
           1: {
             halign: "left",
             textColor: [0, 0, 0],
             fontSize: 12,
-            lineColor: [100, 100, 100]
-          }
+            lineColor: [100, 100, 100],
+          },
         },
         margin: { top: h, left: 25, right: 25 },
         body: this.taches,
-        willDrawCell: function(HookData) {
+        willDrawCell: function (HookData) {
           h += HookData.cell.height / 2;
-        }
+        },
       });
 
       h += 12;
@@ -487,8 +486,8 @@ export default {
       doc.text(doc.splitTextToSize(this.comityData.nextReunion, 160), 25, h);
       //doc.save(this.pdfName + ".pdf");
       doc.output("dataurlnewwindow");
-    }
-  }
+    },
+  },
 };
 </script>
 

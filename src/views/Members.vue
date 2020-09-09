@@ -73,7 +73,7 @@
           </v-dialog>
         </v-toolbar>
       </template>
-      "
+
       <template v-slot:item.actions="{ item }">
         <v-btn-toggle v-model="activeButton" @change="resetActiveButton">
           <v-btn small @click.stop="info(item)">Modifier</v-btn>
@@ -168,10 +168,10 @@ export default {
   data() {
     return {
       rules: [
-        value =>
+        (value) =>
           !value ||
           value.size < 2000000 ||
-          "Avatar size should be less than 2 MB!"
+          "Avatar size should be less than 2 MB!",
       ],
       activeButton: null,
       dialog: false,
@@ -183,7 +183,7 @@ export default {
         { value: "email", text: "Email", sortable: true },
         { value: "birthday", text: "Date de naissance", sortable: true },
         { value: "entry", text: "Date d'entrée", sortable: true },
-        { value: "actions", text: "Actions", sortable: false }
+        { value: "actions", text: "Actions", sortable: false },
       ],
       memberList: [],
       lastName: "",
@@ -202,7 +202,7 @@ export default {
         email: "",
         birthday: "",
         entry: "",
-        key: ""
+        key: "",
       },
       dMember: {},
       postsList: {},
@@ -212,15 +212,15 @@ export default {
         Poste: "post",
         Email: "email",
         "Date de naissance": "birthday",
-        "Date d' entree": "entry"
+        "Date d' entree": "entry",
       },
-      avatar: require("@/assets/default.png")
+      avatar: require("@/assets/default.png"),
     };
   },
   firestore() {
     return {
       memberList: db.collection("memberList"),
-      postsList: db.collection("postsList").doc("list")
+      postsList: db.collection("postsList").doc("list"),
     };
   },
   computed: {
@@ -235,7 +235,7 @@ export default {
       const time = today.getHours() + "h" + today.getMinutes();
       const dateTime = date + "_" + time;
       return "Liste_des_membres_" + dateTime;
-    }
+    },
   },
   methods: {
     uploadImage(event) {
@@ -250,7 +250,7 @@ export default {
         "state_changed", // or 'state_changed'
         () => {
           // Upload completed successfully, now we can get the download URL
-          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
             if (downloadURL) {
               this.infoModal.avatar = downloadURL;
             }
@@ -270,7 +270,7 @@ export default {
         "state_changed", // or 'state_changed'
         () => {
           // Upload completed successfully, now we can get the download URL
-          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
             if (downloadURL) {
               this.avatar = downloadURL;
             }
@@ -293,7 +293,7 @@ export default {
           post: this.post,
           email: this.email,
           birthday: this.birthday,
-          entry: this.entry
+          entry: this.entry,
         })
         .then(() => {
           this.dialog = false;
@@ -315,7 +315,7 @@ export default {
           post: this.infoModal.post,
           email: this.infoModal.email,
           birthday: this.infoModal.birthday,
-          entry: this.infoModal.entry
+          entry: this.infoModal.entry,
         })
         .then(() => {
           this.modifDialog = false;
@@ -346,7 +346,7 @@ export default {
     info(item) {
       st.ref("photo_membre/" + "pic_" + item.id + ".png")
         .getDownloadURL()
-        .then(downloadURL => {
+        .then((downloadURL) => {
           this.infoModal.avatar = downloadURL;
         })
         .catch(() => {
@@ -374,11 +374,11 @@ export default {
         this.$firestore.memberList.doc(member[".key"]).delete();
         var desertRef = st.ref("photo_membre/" + "pic_" + member.id + ".png");
         // Delete the file
-        desertRef.delete().then(function() {
+        desertRef.delete().then(function () {
           console.log("Image from member deleted successfully");
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
