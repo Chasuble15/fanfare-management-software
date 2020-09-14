@@ -36,7 +36,7 @@
             <v-list-item-group v-model="item" color="primary">
               <v-list-item v-for="(item, j) in annee" :key="j">
                 <v-list-item-icon v-if="i != 0">
-                  <v-btn icon>
+                  <v-btn icon @click="downgrade(i,j)">
                     <v-icon color="teal">mdi-arrow-left-thick</v-icon>
                   </v-btn>
                 </v-list-item-icon>
@@ -44,7 +44,7 @@
                   <v-list-item-title v-text="item"></v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-icon v-if="i != eleves.length-1">
-                  <v-btn icon>
+                  <v-btn icon @click="upgrade(i, j)">
                     <v-icon color="teal">mdi-arrow-right-thick</v-icon>
                   </v-btn>
                 </v-list-item-icon>
@@ -68,12 +68,21 @@ export default {
         ["1eleve1", "1eleve2", "1eleve3"],
         ["2eleve1", "2eleve2", "2eleve3"],
         ["3eleve1", "3eleve2", "3eleve3"],
-        ["4eleve1", "4eleve2", "4eleve3"],
+        ["4eleve1", "4eleve2", "4eleve3"]
       ],
-      edit: false,
+      edit: false
     };
   },
 
-  methods: {},
+  methods: {
+    upgrade(bloc, ligne) {
+      this.eleves[bloc + 1].push(this.eleves[bloc][ligne]);
+      this.eleves[bloc].splice(ligne, 1);
+    },
+    downgrade(bloc, ligne) {
+      this.eleves[bloc - 1].push(this.eleves[bloc][ligne]);
+      this.eleves[bloc].splice(ligne, 1);
+    }
+  }
 };
 </script>
