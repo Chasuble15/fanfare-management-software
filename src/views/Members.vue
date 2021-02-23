@@ -1,5 +1,5 @@
 <template>
-  <div class="members" style="text-align: center;">
+  <div class="members" style="text-align: center">
     <h1 class="pa-md-4 mx-lg-auto">Membres</h1>
 
     <v-data-table
@@ -12,15 +12,22 @@
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
-          <v-text-field v-model="filter" type="search" id="filterInput" placeholder="Rechercher..."></v-text-field>
+          <v-text-field
+            v-model="filter"
+            type="search"
+            id="filterInput"
+            placeholder="Rechercher..."
+          ></v-text-field>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="600px" scrollable>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Nouveau membre</v-btn>
+              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
+                >Nouveau membre</v-btn
+              >
             </template>
             <v-card>
               <v-card-title>
-                <span class="headline">Nouveau membre</span>
+                <span class="headline">Nouveau Membre</span>
               </v-card-title>
 
               <v-card-text>
@@ -40,9 +47,16 @@
                   ></v-file-input>
                   <v-text-field v-model="lastName" label="Nom"></v-text-field>
 
-                  <v-text-field v-model="firstName" label="Prénom"></v-text-field>
+                  <v-text-field
+                    v-model="firstName"
+                    label="Prénom"
+                  ></v-text-field>
 
-                  <v-combobox v-model="post" :items="postsList.posts" label="Poste"></v-combobox>
+                  <v-combobox
+                    v-model="post"
+                    :items="postsList.posts"
+                    label="Poste"
+                  ></v-combobox>
 
                   <v-text-field v-model="email" label="Email"></v-text-field>
 
@@ -66,8 +80,12 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="dialog = false">Annuler</v-btn>
-                <v-btn color="blue darken-1" text @click="addMember">Ajouter</v-btn>
+                <v-btn color="blue darken-1" text @click="dialog = false"
+                  >Annuler</v-btn
+                >
+                <v-btn color="blue darken-1" text @click="addMember"
+                  >Ajouter</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -118,18 +136,31 @@
 
             <v-row>
               <v-col>
-                <v-text-field v-model="infoModal.lastName" label="Nom"></v-text-field>
+                <v-text-field
+                  v-model="infoModal.lastName"
+                  label="Nom"
+                ></v-text-field>
               </v-col>
               <v-col>
-                <v-text-field v-model="infoModal.firstName" label="Prénom"></v-text-field>
+                <v-text-field
+                  v-model="infoModal.firstName"
+                  label="Prénom"
+                ></v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-combobox v-model="infoModal.post" :items="postsList.posts" label="Poste"></v-combobox>
+                <v-combobox
+                  v-model="infoModal.post"
+                  :items="postsList.posts"
+                  label="Poste"
+                ></v-combobox>
               </v-col>
             </v-row>
-            <v-text-field v-model="infoModal.email" label="Email"></v-text-field>
+            <v-text-field
+              v-model="infoModal.email"
+              label="Email"
+            ></v-text-field>
 
             <v-text-field
               v-model="infoModal.birthday"
@@ -151,8 +182,12 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="modifDialog = false">Annuler</v-btn>
-          <v-btn color="blue darken-1" text @click="modifyMember">Modifier</v-btn>
+          <v-btn color="blue darken-1" text @click="modifDialog = false"
+            >Annuler</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="modifyMember"
+            >Modifier</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
