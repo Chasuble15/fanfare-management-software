@@ -24,58 +24,125 @@
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
                 >Nouveau membre</v-btn
               >
+
+              <!-- NEW MEMBER template -->
             </template>
             <v-card>
               <v-card-title>
-                <span class="headline">Nouveau Membre</span>
+                <h3>Nouveau Membre</h3>
               </v-card-title>
 
               <v-card-text>
-                <v-container>
-                  <v-avatar class="ma-3" size="125" tile>
-                    <v-img :src="avatar"></v-img>
-                  </v-avatar>
+                <v-avatar class="ma-3" size="125" tile>
+                  <v-img :src="avatar"></v-img>
+                </v-avatar>
 
-                  <v-file-input
-                    ref="fileupload"
-                    :rules="rules"
-                    accept="image/png, image/jpeg, image/bmp"
-                    placeholder="Choisir une photo"
-                    prepend-icon="mdi-camera"
-                    label="Photo"
-                    @change="uploadImageNew"
-                  ></v-file-input>
-                  <v-text-field v-model="lastName" label="Nom"></v-text-field>
+                <v-file-input
+                  ref="fileupload"
+                  :rules="rules"
+                  accept="image/png, image/jpeg, image/bmp"
+                  placeholder="Choisir une photo"
+                  prepend-icon="mdi-camera"
+                  label="Photo"
+                  @change="uploadImageNew"
+                ></v-file-input>
 
-                  <v-text-field
-                    v-model="firstName"
-                    label="Prénom"
-                  ></v-text-field>
+                <h3>Données personnelles</h3>
+                <v-row>
+                  <v-col>
+                    <v-text-field v-model="lastName" label="Nom"></v-text-field>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      v-model="firstName"
+                      label="Prénom"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <template>
+                      <div>
+                        <v-text-field-simplemask
+                          v-model="birthday"
+                          label="Date de naissance"
+                          v-bind:options="{
+                            inputMask: '##/##/####',
+                            outputMask: '##/##/####',
+                            empty: null,
+                            applyAfter: false,
+                            alphanumeric: true,
+                            lowerCase: false,
+                          }"
+                        />
+                      </div>
+                    </template>
+                  </v-col>
 
-                  <v-combobox
-                    v-model="post"
-                    :items="postsList.posts"
-                    label="Poste"
-                  ></v-combobox>
+                  <v-col>
+                    <template>
+                      <div>
+                        <v-text-field-simplemask
+                          v-model="entry"
+                          label="Date d'entrée"
+                          v-bind:options="{
+                            inputMask: '##/##/####',
+                            outputMask: '##/##/####',
+                            empty: null,
+                            applyAfter: false,
+                            alphanumeric: true,
+                            lowerCase: false,
+                          }"
+                        />
+                      </div>
+                    </template>
+                  </v-col>
+                </v-row>
 
-                  <v-text-field v-model="email" label="Email"></v-text-field>
+                <v-combobox
+                  v-model="post"
+                  :items="postsList.posts"
+                  label="Poste"
+                ></v-combobox>
 
-                  <v-text-field
-                    v-model="birthday"
-                    label="Date de naissance"
-                    hint="MM/DD/YYYY format"
-                    persistent-hint
-                    @blur="date = parseDate(dateFormatted)"
-                  ></v-text-field>
+                <h3>Données de contact</h3>
 
-                  <v-text-field
-                    v-model="entry"
-                    label="Date d'entrée"
-                    hint="MM/DD/YYYY format"
-                    persistent-hint
-                    @blur="date = parseDate(dateFormatted)"
-                  ></v-text-field>
-                </v-container>
+                <v-text-field v-model="rue" label="Rue"></v-text-field>
+
+                <v-row>
+                  <v-col>
+                    <v-text-field v-model="npa" label="NPA"></v-text-field>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      v-model="commune"
+                      label="Commune"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <template>
+                      <div>
+                        <v-text-field-simplemask
+                          v-model="phone"
+                          label="Numéro de téléphone"
+                          v-bind:options="{
+                            inputMask: '### ### ## ##',
+                            outputMask: '### ### ## ##',
+                            empty: null,
+                            applyAfter: false,
+                            alphanumeric: true,
+                            lowerCase: false,
+                          }"
+                        />
+                      </div>
+                    </template>
+                  </v-col>
+                  <v-col>
+                    <v-text-field v-model="email" label="Email"></v-text-field>
+                  </v-col>
+                </v-row>
               </v-card-text>
 
               <v-card-actions>
@@ -112,10 +179,11 @@
       </template>
     </v-data-table>
 
+    <!-- Modifier un membre dialog -->
     <v-dialog v-model="modifDialog" max-width="600px" scrollable>
       <v-card>
         <v-card-title>
-          <span class="headline">Modifier membre</span>
+          <h3>Modifier Membre</h3>
         </v-card-title>
 
         <v-card-text>
@@ -134,6 +202,7 @@
               @change="uploadImage"
             ></v-file-input>
 
+            <h3>Données personnelles</h3>
             <v-row>
               <v-col>
                 <v-text-field
@@ -150,6 +219,45 @@
             </v-row>
             <v-row>
               <v-col>
+                <template>
+                  <div>
+                    <v-text-field-simplemask
+                      v-model="infoModal.birthday"
+                      label="Date de naissance"
+                      v-bind:options="{
+                        inputMask: '##/##/####',
+                        outputMask: '##/##/####',
+                        empty: null,
+                        applyAfter: false,
+                        alphanumeric: true,
+                        lowerCase: false,
+                      }"
+                    />
+                  </div>
+                </template>
+              </v-col>
+
+              <v-col>
+                <template>
+                  <div>
+                    <v-text-field-simplemask
+                      v-model="infoModal.entry"
+                      label="Date d'entrée"
+                      v-bind:options="{
+                        inputMask: '##/##/####',
+                        outputMask: '##/##/####',
+                        empty: null,
+                        applyAfter: false,
+                        alphanumeric: true,
+                        lowerCase: false,
+                      }"
+                    />
+                  </div>
+                </template>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
                 <v-combobox
                   v-model="infoModal.post"
                   :items="postsList.posts"
@@ -157,26 +265,50 @@
                 ></v-combobox>
               </v-col>
             </v-row>
-            <v-text-field
-              v-model="infoModal.email"
-              label="Email"
-            ></v-text-field>
+            <h3>Données de contact</h3>
 
-            <v-text-field
-              v-model="infoModal.birthday"
-              label="Date de naissance"
-              hint="MM/DD/YYYY format"
-              persistent-hint
-              @blur="date = parseDate(dateFormatted)"
-            ></v-text-field>
+            <v-text-field v-model="infoModal.rue" label="Rue"></v-text-field>
 
-            <v-text-field
-              v-model="infoModal.entry"
-              label="Date d'entrée"
-              hint="MM/DD/YYYY format"
-              persistent-hint
-              @blur="date = parseDate(dateFormatted)"
-            ></v-text-field>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="infoModal.npa"
+                  label="NPA"
+                ></v-text-field>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="infoModal.commune"
+                  label="Commune"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <template>
+                  <div>
+                    <v-text-field-simplemask
+                      v-model="infoModal.phone"
+                      label="Numéro de téléphone"
+                      v-bind:options="{
+                        inputMask: '### ### ## ##',
+                        outputMask: '### ### ## ##',
+                        empty: null,
+                        applyAfter: false,
+                        alphanumeric: true,
+                        lowerCase: false,
+                      }"
+                    />
+                  </div>
+                </template>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="infoModal.email"
+                  label="Email"
+                ></v-text-field>
+              </v-col>
+            </v-row>
           </v-container>
         </v-card-text>
 
@@ -202,6 +334,7 @@ export default {
 
   data() {
     return {
+      focus: false,
       rules: [
         (value) =>
           !value ||
@@ -216,6 +349,7 @@ export default {
         { value: "lastName", text: "Nom", sortable: true },
         { value: "post", text: "Poste", sortable: true },
         { value: "email", text: "Email", sortable: true },
+        { value: "phone", text: "Téléphone", sortable: true },
         { value: "birthday", text: "Date de naissance", sortable: true },
         { value: "entry", text: "Date d'entrée", sortable: true },
         { value: "actions", text: "Actions", sortable: false },
@@ -227,6 +361,11 @@ export default {
       email: "",
       birthday: "",
       entry: "",
+      rue: "",
+      npa: "",
+      commune: "",
+      phone: "",
+      id: "",
       filter: null,
       infoModal: {
         avatar: require("@/assets/default.png"),
@@ -238,6 +377,10 @@ export default {
         birthday: "",
         entry: "",
         key: "",
+        rue: "",
+        npa: "",
+        commune: "",
+        phone: "",
       },
       dMember: {},
       postsList: {},
@@ -248,6 +391,10 @@ export default {
         Email: "email",
         "Date de naissance": "birthday",
         "Date d' entree": "entry",
+        Rue: "rue",
+        NPA: "npa",
+        Commune: "commune",
+        Telephone: "phone",
       },
       avatar: require("@/assets/default.png"),
     };
@@ -272,7 +419,15 @@ export default {
       return "Liste_des_membres_" + dateTime;
     },
   },
+
   methods: {
+    generateId() {
+      let id = Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+      console.log(id);
+      return id;
+    },
     uploadImage(event) {
       let file = event;
 
@@ -295,10 +450,8 @@ export default {
     },
     uploadImageNew(event) {
       let file = event;
-
-      var storageRef = st.ref(
-        "photo_membre/" + "pic_" + (this.memberList.length + 1) + ".png"
-      );
+      this.id = this.generateId();
+      var storageRef = st.ref("photo_membre/" + "pic_" + this.id + ".png");
 
       let uploadTask = storageRef.put(file);
       uploadTask.on(
@@ -319,16 +472,19 @@ export default {
       });
     },
     addMember() {
-      var id = this.memberList.length + 1;
       this.$firestore.memberList
         .add({
-          id: id,
+          id: this.id,
           lastName: this.lastName,
           firstName: this.firstName,
           post: this.post,
           email: this.email,
           birthday: this.birthday,
           entry: this.entry,
+          rue: this.rue,
+          npa: this.npa,
+          commune: this.commune,
+          phone: this.phone,
         })
         .then(() => {
           this.dialog = false;
@@ -339,6 +495,10 @@ export default {
           this.birthday = "";
           this.entry = "";
           this.avatar = require("@/assets/default.png");
+          this.rue = "";
+          this.npa = "";
+          this.commune = "";
+          this.phone = "";
         });
     },
     modifyMember() {
@@ -351,6 +511,10 @@ export default {
           email: this.infoModal.email,
           birthday: this.infoModal.birthday,
           entry: this.infoModal.entry,
+          rue: this.infoModal.rue,
+          npa: this.infoModal.npa,
+          commune: this.infoModal.commune,
+          phone: this.infoModal.phone,
         })
         .then(() => {
           this.modifDialog = false;
@@ -363,6 +527,10 @@ export default {
           this.infoModal.birthday = "";
           this.infoModal.entry = "";
           this.infoModal.avatar = "";
+          this.infoModal.rue = "";
+          this.infoModal.npa = "";
+          this.infoModal.commune = "";
+          this.infoModal.phone = "";
         });
     },
     cancelModify() {
@@ -376,6 +544,10 @@ export default {
       this.infoModal.birthday = "";
       this.infoModal.entry = "";
       this.infoModal.avatar = "";
+      this.infoModal.rue = "";
+      this.infoModal.npa = "";
+      this.infoModal.commune = "";
+      this.infoModal.phone = "";
     },
 
     info(item) {
@@ -396,6 +568,10 @@ export default {
       this.infoModal.key = item[".key"];
       this.infoModal.id = item.id;
       this.modifDialog = true;
+      this.infoModal.rue = item.rue;
+      this.infoModal.npa = item.npa;
+      this.infoModal.commune = item.commune;
+      this.infoModal.phone = item.phone;
     },
     deleteMember(member) {
       var r = confirm(

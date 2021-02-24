@@ -281,7 +281,7 @@ export default {
         { value: "actions", text: "Actions", sortable: false },
       ],
       instrumentList: [],
-      possessorKey: null,
+      possessorKey: "",
       date: "",
       menu: false,
       menuService: false,
@@ -343,7 +343,7 @@ export default {
             state: this.edit.state,
             service: this.edit.service,
             free: this.edit.free,
-            possessorKey: null,
+            possessorKey: "",
             date: "",
           })
           .then(() => {
@@ -354,7 +354,7 @@ export default {
             this.edit.state = 50;
             this.edit.service = "";
             this.edit.free = false;
-            this.edit.possessorKey = null;
+            this.edit.possessorKey = "";
             this.edit.date = "";
           });
       } else {
@@ -377,7 +377,7 @@ export default {
             this.edit.state = 50;
             this.edit.service = "";
             this.edit.free = false;
-            this.edit.possessorKey = null;
+            this.edit.possessorKey = "";
             this.edit.date = "";
           });
       }
@@ -406,12 +406,13 @@ export default {
       return possessors;
     },
     getPossessorName(key) {
-      if (key) {
+      try {
         const resultat = this.memberList.find(
           (member) => member[".key"] === key
         );
+        console.log(resultat.firstName);
         return resultat.firstName + " " + resultat.lastName;
-      } else {
+      } catch (error) {
         return "";
       }
     },
@@ -441,10 +442,10 @@ export default {
       this.name = "";
       this.serial = "";
       this.state = 50;
-      this.service = null;
+      this.service = "";
       this.free = false;
       this.dialog = false;
-      this.possessorKey = null;
+      this.possessorKey = "";
       this.date = "";
     },
     deleteInstr(instrument) {
