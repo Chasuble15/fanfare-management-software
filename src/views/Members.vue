@@ -472,6 +472,9 @@ export default {
       });
     },
     addMember() {
+      if (this.id === "") {
+        this.id = this.generateId();
+      }
       this.$firestore.memberList
         .add({
           id: this.id,

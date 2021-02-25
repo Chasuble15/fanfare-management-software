@@ -36,7 +36,7 @@
             <!-- Card Ajouter instrument -->
             <v-card>
               <v-card-title>
-                <span class="headline">Ajouter Instrument</span>
+                <h3>Ajouter Instrument</h3>
               </v-card-title>
 
               <v-card-text>
@@ -194,7 +194,7 @@
     <v-dialog v-model="editDialog" max-width="600px" scrollable>
       <v-card>
         <v-card-title>
-          <span class="headline">Modifier instrument</span>
+          <h3>Modifier Instrument</h3>
         </v-card-title>
 
         <v-card-text>
@@ -206,10 +206,23 @@
               label="N° de série"
             ></v-text-field>
 
-            <v-text-field
-              v-model="edit.service"
-              label="Date du dernier service"
-            ></v-text-field>
+            <template>
+              <div>
+                <v-text-field-simplemask
+                  v-model="edit.service"
+                  label="Date du dernier service"
+                  append-icon="mdi-calendar-month"
+                  v-bind:options="{
+                    inputMask: '##/##/####',
+                    outputMask: '##/##/####',
+                    empty: null,
+                    applyAfter: false,
+                    alphanumeric: true,
+                    lowerCase: false,
+                  }"
+                />
+              </div>
+            </template>
 
             <v-slider
               v-model="edit.state"
@@ -232,12 +245,23 @@
               </v-col>
               <v-col>
                 <!-- Selecteur de date possesseur -->
-
-                <v-text-field
-                  v-model="edit.date"
-                  label="Date"
-                  append-icon="mdi-calendar-month"
-                ></v-text-field>
+                <template>
+                  <div>
+                    <v-text-field-simplemask
+                      v-model="edit.date"
+                      label="Date"
+                      append-icon="mdi-calendar-month"
+                      v-bind:options="{
+                        inputMask: '##/##/####',
+                        outputMask: '##/##/####',
+                        empty: null,
+                        applyAfter: false,
+                        alphanumeric: true,
+                        lowerCase: false,
+                      }"
+                    />
+                  </div>
+                </template>
               </v-col>
             </v-row>
           </v-container>
