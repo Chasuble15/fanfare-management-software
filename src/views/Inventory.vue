@@ -11,6 +11,7 @@
       class="elevation-1"
       :search="filter"
       disable-pagination
+      @click:row="getDetail"
     >
       <!-- Entête de la table -->
       <template v-slot:top>
@@ -506,6 +507,9 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
+    getDetail(value) {
+      console.log(value)
+    }
   },
 };
 </script>

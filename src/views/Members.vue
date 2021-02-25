@@ -9,6 +9,7 @@
       class="elevation-1"
       :search="filter"
       disable-pagination
+      @click:row="getDetail"
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
@@ -323,6 +324,70 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Detail info dialog -->
+    <v-dialog v-model="detailDialog" max-width="600px" scrollable>
+      <v-card>
+        <v-card-title>
+          <h3>{{ detail.firstName }} {{ detail.lastName }}</h3>
+        </v-card-title>
+
+        <v-card-text>
+          <v-container>
+            <v-avatar class="ma-3" size="125" tile>
+              <v-img :src="detail.avatar"></v-img>
+            </v-avatar>
+
+            <template>
+              <v-simple-table dense>
+                <tbody>
+                  <tr>
+                    <td><b>Prénom</b></td>
+                    <td>{{ detail.firstName }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Nom</b></td>
+                    <td>{{ detail.lastName }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Date de naissance</b></td>
+                    <td>{{ detail.birthday }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Date d'entrée</b></td>
+                    <td>{{ detail.entry }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Poste</b></td>
+                    <td>{{ detail.post }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Rue</b></td>
+                    <td>{{ detail.rue }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>NPA</b></td>
+                    <td>{{ detail.npa }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Commune</b></td>
+                    <td>{{ detail.commune }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Téléphone</b></td>
+                    <td>{{ detail.phone }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Email</b></td>
+                    <td>{{ detail.email }}</td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
+            </template>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -397,6 +462,8 @@ export default {
         Telephone: "phone",
       },
       avatar: require("@/assets/default.png"),
+      detail: {},
+      detailDialog: false,
     };
   },
   firestore() {
@@ -592,6 +659,21 @@ export default {
           console.log("Image from member deleted successfully");
         });
       }
+    },
+    getDetail(value) {
+      this.detail = value;
+      st.ref("photo_membre/" + "pic_" + value.id + ".png")
+        .getDownloadURL()
+        .then((downloadURL) => {
+          this.detail.avatar = downloadURL;
+          console.log(this.detail);
+          this.detailDialog = true;
+        })
+        .catch(() => {
+          this.detail.avatar = require("@/assets/default.png");
+          console.log(this.detail);
+          this.detailDialog = true;
+        });
     },
   },
 };

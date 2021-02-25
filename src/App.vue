@@ -4,10 +4,10 @@
       <v-list>
         <v-list-item :to="{ path: '/' }">
           <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
+            <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>Home</v-list-item-title>
+            <v-list-item-title>Tableau de bord</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item :to="{ path: '/members' }">
@@ -62,20 +62,19 @@
     </v-navigation-drawer>
 
     <v-app-bar app clipped-left>
-      <v-toolbar-side-icon>
-        <v-img
-          contain
-          src="@/assets/logoAvenir.jpg"
-          max-height="50"
-          max-width="70"
-        ></v-img>
-      </v-toolbar-side-icon>
+      <v-img
+        contain
+        src="@/assets/logoAvenir.jpg"
+        max-height="50"
+        max-width="70"
+      ></v-img>
+
       <v-divider class="mx-4" inset vertical></v-divider>
       <v-toolbar-title>
         <h2 class="font-weight-regular">Fanfare Management</h2>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      Alpha - Version 1.0
+      Alpha - Version 1.1
     </v-app-bar>
     <v-content>
       <v-container fluid>
