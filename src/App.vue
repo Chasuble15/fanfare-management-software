@@ -74,7 +74,7 @@
         <h2 class="font-weight-regular">Fanfare Management</h2>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      Alpha - Version 1.1
+      Alpha - Version 1.2
     </v-app-bar>
     <v-content>
       <v-container fluid>
@@ -95,3 +95,4 @@ export default {
   }),
 };
 </script>
+

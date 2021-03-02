@@ -1,13 +1,44 @@
 <template>
-  <div class="transcript" style="text-align: center;">
+  <div class="transcript" style="text-align: center">
     <h1 class="pa-md-4 mx-lg-auto">PV Maker</h1>
+    <v-navigation-drawer absolute temporary right>
+      <template v-slot:prepend>
+        <v-list-item two-line>
+          <v-list-item-avatar>
+            <img src="https://randomuser.me/api/portraits/women/81.jpg" />
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>Jane Smith</v-list-item-title>
+            <v-list-item-subtitle>Logged In</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+
+      <v-divider></v-divider>
+
+      <v-list dense>
+        <v-list-item v-for="item in items" :key="item.title">
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
     <v-card>
       <v-toolbar flat color="blue-grey" dark>
         <v-toolbar-title>Réunion du comité</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn @click="example">Exemple</v-btn>
         <v-spacer></v-spacer>
-        <v-btn @click="clearData">Clear les champs</v-btn>
+        <v-btn class="mx-4" @click="updateData"
+          ><v-icon>mdi-content-save</v-icon></v-btn
+        >
+        <v-btn @click="clearData"><v-icon>mdi-broom</v-icon></v-btn>
       </v-toolbar>
       <v-card-text>
         <v-row>
@@ -45,7 +76,7 @@
           </v-col>
         </v-row>
 
-        <v-subheader>Présence</v-subheader>
+        <v-card-title>Présence</v-card-title>
         <v-combobox
           v-model="comityData.membres"
           chips
@@ -55,24 +86,22 @@
           solo
         >
           <template v-slot:selection="{ attrs, item, select, selected }">
-            <v-chip
-              v-bind="attrs"
-              :input-value="selected"
-              close
-              @click="select"
-              @click:close="remove(item)"
-            >
+            <v-chip v-bind="attrs" :input-value="selected" @click="select">
               <strong>{{ item }}</strong>
               &nbsp;
             </v-chip>
           </template>
         </v-combobox>
 
-        <v-subheader>Questions posées</v-subheader>
-        <v-container fluid v-for="(question, u) in comityData.questions" :key="u">
+        <v-card-title>Questions posées</v-card-title>
+        <v-container
+          fluid
+          v-for="(question, u) in comityData.questions"
+          :key="u"
+        >
           <v-card class="mx-auto">
             <v-card-title v-if="!comityData.questions[u].edit">
-              {{question.title}}
+              {{ question.title }}
               <v-btn icon @click="edit(u)">
                 <v-icon color="grey lighten-1">mdi-pencil</v-icon>
               </v-btn>
@@ -80,16 +109,19 @@
             <v-card-title v-else>
               <v-row>
                 <v-col>
-                  <v-text-field solo v-model="comityData.questions[u].title"></v-text-field>
+                  <v-text-field
+                    solo
+                    v-model="comityData.questions[u].title"
+                  ></v-text-field>
                 </v-col>
                 <v-col class="text-right">
                   <v-btn @click="removeBloc(u)" class="mx-2" dark color="red">
-                    <v-icon>mdi-close</v-icon>bloc
+                    <v-icon>mdi-close</v-icon>Question posée
                   </v-btn>
                 </v-col>
               </v-row>
             </v-card-title>
-            <v-list flat subheader>
+            <v-list flat card-title>
               <v-list-item-group color="primary">
                 <v-list-item
                   v-for="(question, i) in comityData.questions[u].content"
@@ -103,7 +135,8 @@
                   <v-list-item-content
                     v-if="!comityData.questions[u].edit"
                     class="d-flex left"
-                  >{{question}}</v-list-item-content>
+                    >{{ question }}</v-list-item-content
+                  >
                   <v-list-item-content v-else class="d-flex left">
                     <v-textarea
                       dense
@@ -131,13 +164,14 @@
               color="blue-grey"
               dark
               class="my-6"
-            >Valider</v-btn>
+              >Valider</v-btn
+            >
           </v-card>
         </v-container>
         <v-btn @click="addBloc" class="mx-2" dark color="indigo">
-          <v-icon>mdi-plus</v-icon>bloc
+          <v-icon>mdi-plus</v-icon>Question posée
         </v-btn>
-        <v-subheader>Tâches à effectuer prochainement</v-subheader>
+        <v-card-title>Tâches à effectuer prochainement</v-card-title>
         <v-data-table
           dense
           hide-default-footer
@@ -146,7 +180,12 @@
           disable-sort
         >
           <template v-slot:item.0="{ item }">
-            <v-text-field placeholder="Nom..." filled dense v-model="item['0']"></v-text-field>
+            <v-text-field
+              placeholder="Nom..."
+              filled
+              dense
+              v-model="item['0']"
+            ></v-text-field>
           </template>
           <template v-slot:item.1="{ item }">
             <v-textarea
@@ -161,12 +200,18 @@
         <v-btn @click="addTask" class="mx-2" dark color="indigo">
           <v-icon>mdi-plus</v-icon>tâche
         </v-btn>
-        <v-subheader>Prochaine réunion</v-subheader>
+        <v-card-title>Prochaine réunion</v-card-title>
         <v-textarea v-model="comityData.nextReunion" filled></v-textarea>
         <v-divider class="my-2"></v-divider>
-        <v-btn color="blue-grey" class="text-center" dark @click="createPDF">Create PDF</v-btn>
+        <v-btn color="blue-grey" class="text-center" dark @click="createPDF"
+          >Create PDF</v-btn
+        >
       </v-card-text>
     </v-card>
+    <v-snackbar v-model="snackbar" :timeout="2000" width="50">
+      Page sauvegardée
+      <v-icon dark>mdi-check-bold</v-icon>
+    </v-snackbar>
   </div>
 </template>
 
@@ -265,6 +310,7 @@ export default {
         ],
       },
       comityData: {},
+      snackbar: false,
     };
   },
 
@@ -292,7 +338,14 @@ export default {
   },
   methods: {
     example() {
-      this.$firestore.comityData.update(this.exampleData);
+      var r = confirm("Êtes-vous sûr ? Le contenu sera écrasé.");
+      if (r == true) {
+        this.$firestore.comityData.update(this.exampleData);
+      }
+    },
+    updateData() {
+      this.$firestore.comityData.set(this.comityData);
+      this.snackbar = true;
     },
     edit(index) {
       this.comityData.questions[index].edit = !this.comityData.questions[index]
@@ -307,7 +360,7 @@ export default {
     },
     addBloc() {
       this.comityData.questions.push(
-        new textBloc("Titre du bloc", ["Premier élément"])
+        new textBloc("Titre de la question", ["Premier élément"])
       );
     },
     removeBloc(index) {
@@ -326,7 +379,10 @@ export default {
         this.comityData.items.splice(index, 1);
     },
     clearData() {
-      this.$firestore.comityData.update(this.resetData);
+      var r = confirm("Êtes-vous sûr ? Le contenu sera supprimé.");
+      if (r == true) {
+        this.$firestore.comityData.update(this.resetData);
+      }
     },
     remove(item) {
       this.comityData.membres.splice(this.membres.indexOf(item), 1);
