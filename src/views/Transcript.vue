@@ -1,31 +1,40 @@
 <template>
   <div class="transcript" style="text-align: center">
     <h1 class="pa-md-4 mx-lg-auto">PV Maker</h1>
-    <v-navigation-drawer absolute temporary right>
+    <v-navigation-drawer v-model="menu" absolute temporary right width="400">
       <template v-slot:prepend>
-        <v-list-item two-line>
-          <v-list-item-avatar>
-            <img src="https://randomuser.me/api/portraits/women/81.jpg" />
-          </v-list-item-avatar>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-file</v-icon>
+          </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>Jane Smith</v-list-item-title>
-            <v-list-item-subtitle>Logged In</v-list-item-subtitle>
+            <v-list-item-title><h3>Liste des PV</h3></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
 
       <v-divider></v-divider>
 
-      <v-list dense>
-        <v-list-item v-for="item in items" :key="item.title">
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
+      <v-list>
+        <v-list-item v-for="(pv, i) in pvref" :key="pv.pvname">
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title>{{ pv.pvname }}</v-list-item-title>
           </v-list-item-content>
+
+          <v-list-item-action>
+            <div>
+              <v-btn icon @click="openpv(i)"
+                ><v-icon>mdi-folder-open</v-icon></v-btn
+              >
+              <v-btn icon @click="createPDF(i)"
+                ><v-icon>mdi-file-pdf</v-icon></v-btn
+              >
+              <v-btn icon :disabled="lockdelete(i)" @click="deletepv(i)"
+                ><v-icon>mdi-close-circle</v-icon></v-btn
+              >
+            </div>
+          </v-list-item-action>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -33,12 +42,15 @@
       <v-toolbar flat color="blue-grey" dark>
         <v-toolbar-title>Réunion du comité</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn @click="example">Exemple</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn class="mx-4" @click="updateData"
+        <v-btn class="mx-2" @click="updateData"
           ><v-icon>mdi-content-save</v-icon></v-btn
         >
-        <v-btn @click="clearData"><v-icon>mdi-broom</v-icon></v-btn>
+        <v-btn class="mx-2" @click="clearData"
+          ><v-icon>mdi-broom</v-icon></v-btn
+        >
+        <v-btn class="mx-2" @click="menu = true"
+          ><v-icon>mdi-folder-open</v-icon></v-btn
+        >
       </v-toolbar>
       <v-card-text>
         <v-row>
@@ -116,12 +128,13 @@
                 </v-col>
                 <v-col class="text-right">
                   <v-btn @click="removeBloc(u)" class="mx-2" dark color="red">
-                    <v-icon>mdi-close</v-icon>Question posée
+                    <v-icon>mdi-close</v-icon>
+                    <div class="mx-2">Question posée</div>
                   </v-btn>
                 </v-col>
               </v-row>
             </v-card-title>
-            <v-list flat card-title>
+            <v-list dense flat card-title>
               <v-list-item-group color="primary">
                 <v-list-item
                   v-for="(question, i) in comityData.questions[u].content"
@@ -139,6 +152,8 @@
                   >
                   <v-list-item-content v-else class="d-flex left">
                     <v-textarea
+                      auto-grow
+                      rows="3"
                       dense
                       v-model="comityData.questions[u].content[i]"
                       filled
@@ -169,7 +184,8 @@
           </v-card>
         </v-container>
         <v-btn @click="addBloc" class="mx-2" dark color="indigo">
-          <v-icon>mdi-plus</v-icon>Question posée
+          <v-icon>mdi-plus</v-icon>
+          <div class="mx-2">Question posée</div>
         </v-btn>
         <v-card-title>Tâches à effectuer prochainement</v-card-title>
         <v-data-table
@@ -189,6 +205,8 @@
           </template>
           <template v-slot:item.1="{ item }">
             <v-textarea
+              auto-grow
+              rows="3"
               placeholder="Tâche..."
               dense
               v-model="item['1']"
@@ -198,15 +216,33 @@
           </template>
         </v-data-table>
         <v-btn @click="addTask" class="mx-2" dark color="indigo">
-          <v-icon>mdi-plus</v-icon>tâche
+          <v-icon>mdi-plus</v-icon>
+          <div class="mx-2">tâche</div>
         </v-btn>
         <v-card-title>Prochaine réunion</v-card-title>
-        <v-textarea v-model="comityData.nextReunion" filled></v-textarea>
-        <v-divider class="my-2"></v-divider>
-        <v-btn color="blue-grey" class="text-center" dark @click="createPDF"
-          >Create PDF</v-btn
-        >
+        <v-textarea
+          auto-grow
+          rows="3"
+          v-model="comityData.nextReunion"
+          filled
+        ></v-textarea>
       </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions
+        ><v-row justify="center">
+          <v-col sm="2">
+            <v-text-field
+              v-model="comityData.pvname"
+              label="Nom du PV"
+            ></v-text-field>
+          </v-col>
+          <v-col sm="2">
+            <v-btn color="dark-grey" class="text-center" dark @click="savepv"
+              >Sauvegarder</v-btn
+            >
+          </v-col>
+        </v-row>
+      </v-card-actions>
     </v-card>
     <v-snackbar v-model="snackbar" :timeout="2000" width="50">
       Page sauvegardée
@@ -240,107 +276,46 @@ export default {
         questions: [],
         items: [],
         membres: [],
-      },
-      exampleData: {
-        pdfName: "Procès-Verbal",
-        society: "Jeunesse de Chamoson",
-        heure: "20h",
-        date: "09 novembre 2018",
-        lieu: "chez Olivier",
-        nextReunion: "A définir...",
-        membres: [
-          "David Carrupt",
-          "Olivier Carruzzo",
-          "Julien Dénis",
-          "Nicolas Carrupt",
-          "Clémence Thurre",
-        ],
-        questions: [
-          {
-            title: "Volley",
-            content: [
-              "Refaire de la pub.",
-              "Nourriture : frites demander à Egglof les proportions. Acheter minimum 30kg. 100 saucisses, 100 tranches de porc.",
-              "Feldschlosschen : tireuse, blanche et blonde.",
-              "Vin : pas besoin d’acheter, stock.",
-              "Sponsors : Raiffaisen (David), Menuiserie Carr. (David), Charlie Moulin (Nicolas), ESC (Olivier), Dom Rénovation (Jordan), Garage des Plantys(Olivier), Valelectric (David), Fuchs (Clémence), Atra SA (Rémy) Martin Michel Transport (Rémy), Haut de Cry Paysage (Crettenand), Favre Alain Transport (Sylvain), CX (Olivier).",
-              "Doodle :  pour les bénévoles. Caisse, bar, nourriture. 17h-20h-23h-02h. Besoin de monde pour le montage. 2p. caisse, bar 3-4 p., food 2-4 p. ",
-            ],
-            edit: false,
-          },
-          {
-            title: "Divers",
-            content: [
-              "Téléthon : 6 personnes.",
-              "Noss : coup de main et mise en place et rangement le lendemain.",
-              "Assemblée générale et souper : samedi 2 février",
-              "Carnaval : 4 mars",
-            ],
-            edit: false,
-          },
-        ],
-        headers: [
-          {
-            text: "Membre",
-            value: "0",
-            width: "200px",
-          },
-          {
-            text: "Tâche",
-            value: "1",
-          },
-        ],
-        items: [
-          {
-            0: "David",
-            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation",
-          },
-          {
-            0: "Clémence",
-            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation",
-          },
-          {
-            0: "Julien",
-            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation",
-          },
-          {
-            0: "Tous",
-            1: "Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation. Recontacter la commune pour l’autorisation.",
-          },
-        ],
+        pvname: "",
       },
       comityData: {},
       snackbar: false,
+      menu: false,
     };
-  },
-
-  computed: {
-    presence() {
-      var temp = "";
-      for (let index = 0; index < this.comityData.membres.length; index++) {
-        temp += this.comityData.membres[index] + ", ";
-      }
-      temp = temp.substring(0, temp.length - 2);
-      return (temp += ".");
-    },
-    taches() {
-      var temp = [];
-      this.comityData.items.forEach((element) => {
-        temp.push(Object.assign([], element));
-      });
-      return temp;
-    },
   },
   firestore() {
     return {
       comityData: db.collection("comityData").doc("data"),
+      pvref: db.collection("pvList"),
     };
   },
   methods: {
-    example() {
-      var r = confirm("Êtes-vous sûr ? Le contenu sera écrasé.");
+    lockdelete(index) {
+      if (this.pvref[index].pvname == "PV d'exemple Jeunesse") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    presence(comityData) {
+      var temp = "";
+      for (let index = 0; index < comityData.membres.length; index++) {
+        temp += comityData.membres[index] + ", ";
+      }
+      temp = temp.substring(0, temp.length - 2);
+      return (temp += ".");
+    },
+    taches(comityData) {
+      var temp = [];
+      comityData.items.forEach((element) => {
+        temp.push(Object.assign([], element));
+      });
+      return temp;
+    },
+    openpv(index) {
+      var r = confirm("Êtes-vous sûr ? Le contenu actuel sera écrasé.");
       if (r == true) {
-        this.$firestore.comityData.update(this.exampleData);
+        this.$firestore.comityData.set(this.pvref[index]);
       }
     },
     updateData() {
@@ -355,7 +330,7 @@ export default {
       this.comityData.questions[index].content.push("");
     },
     removeQuestion(index1, index2) {
-      confirm("Are you sure you want to delete this item?") &&
+      confirm("Êtes vous sûr de vouloir supprimer cet élément ?") &&
         this.comityData.questions[index1].content.splice(index2, 1);
     },
     addBloc() {
@@ -364,7 +339,7 @@ export default {
       );
     },
     removeBloc(index) {
-      confirm("Are you sure you want to delete this item?") &&
+      confirm("Êtes vous sûr de vouloir supprimer cet élément ?") &&
         this.comityData.questions.splice(index, 1);
     },
     addTask() {
@@ -375,7 +350,7 @@ export default {
     },
     removeTask(item) {
       const index = this.comityData.items.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
+      confirm("Êtes vous sûr de vouloir supprimer cet élément ?") &&
         this.comityData.items.splice(index, 1);
     },
     clearData() {
@@ -388,7 +363,17 @@ export default {
       this.comityData.membres.splice(this.membres.indexOf(item), 1);
       this.comityData.membres = [...this.membres];
     },
-    createPDF() {
+    savepv() {
+      this.$firestore.pvref.doc(this.comityData.pvname).set(this.comityData);
+    },
+    deletepv(index) {
+      var r = confirm("Êtes-vous sûr de vouloir supprimer de PV ?");
+      if (r == true) {
+        this.$firestore.pvref.doc(this.pvref[index][".key"]).delete();
+      }
+    },
+    createPDF(index) {
+      var comityData = this.pvref[index];
       var doc = new jsPDF();
 
       doc.addFileToVFS("Roboto-Regular.ttf", RobotoRegular);
@@ -401,14 +386,7 @@ export default {
       doc.setFontSize(16);
 
       doc.text("PROCES VERBAL DE REUNION", 105, 20, null, null, "center");
-      doc.text(
-        this.comityData.society.toUpperCase(),
-        105,
-        27,
-        null,
-        null,
-        "center"
-      );
+      doc.text(comityData.society.toUpperCase(), 105, 27, null, null, "center");
       doc.line(10, 31, 200, 31);
 
       doc.setFontSize(13);
@@ -420,7 +398,7 @@ export default {
       doc.setFontStyle("normal");
       doc.text(
         doc.splitTextToSize(
-          `Une séance ordinaire de la société "${this.comityData.society}" a été convoquée, à ${this.comityData.heure}, le ${this.comityData.date} ${this.comityData.lieu}, par le comité.`,
+          `Une séance ordinaire de la société "${comityData.society}" a été convoquée, à ${comityData.heure}, le ${comityData.date} ${comityData.lieu}, par le comité.`,
           160
         ),
         25,
@@ -437,9 +415,11 @@ export default {
       h += 10;
 
       doc.setFontStyle("normal");
-      doc.text(doc.splitTextToSize(this.presence, 160), 25, h);
+      doc.text(doc.splitTextToSize(this.presence(comityData), 160), 25, h);
 
-      h += 15 + (doc.splitTextToSize(this.presence, 160).length - 1) * 5.5;
+      h +=
+        15 +
+        (doc.splitTextToSize(this.presence(comityData), 160).length - 1) * 5.5;
 
       doc.setFontSize(13);
       doc.setFontStyle("bold");
@@ -449,16 +429,16 @@ export default {
 
       h += 10;
 
-      for (let i = 0; i < this.comityData.questions.length; i++) {
+      for (let i = 0; i < comityData.questions.length; i++) {
         doc.setFontStyle("bold");
-        doc.text(`${i + 1})  ${this.comityData.questions[i].title}`, 25, h);
+        doc.text(`${i + 1})  ${comityData.questions[i].title}`, 25, h);
 
         h += 8;
 
         doc.setFontStyle("normal");
         for (
           let index = 0;
-          index < this.comityData.questions[i].content.length;
+          index < comityData.questions[i].content.length;
           index++
         ) {
           if (h >= 280) {
@@ -466,17 +446,12 @@ export default {
             h = 20;
           }
           let numberOfLines =
-            doc.splitTextToSize(
-              this.comityData.questions[i].content[index],
-              160
-            ).length - 1;
+            doc.splitTextToSize(comityData.questions[i].content[index], 160)
+              .length - 1;
 
           doc.text("-", 25, h);
           doc.text(
-            doc.splitTextToSize(
-              this.comityData.questions[i].content[index],
-              160
-            ),
+            doc.splitTextToSize(comityData.questions[i].content[index], 160),
             30,
             h
           );
@@ -485,7 +460,7 @@ export default {
         }
       }
 
-      if (h >= 280 - this.taches.length * 10) {
+      if (h >= 280 - this.taches(comityData).length * 10) {
         doc.addPage();
         h = 20;
       }
@@ -517,7 +492,7 @@ export default {
           },
         },
         margin: { top: h, left: 25, right: 25 },
-        body: this.taches,
+        body: this.taches(comityData),
         willDrawCell: function (HookData) {
           h += HookData.cell.height / 2;
         },
@@ -539,9 +514,9 @@ export default {
 
       doc.setFontStyle("normal");
       doc.setFontSize(12);
-      doc.text(doc.splitTextToSize(this.comityData.nextReunion, 160), 25, h);
-      //doc.save(this.pdfName + ".pdf");
-      doc.output("dataurlnewwindow");
+      doc.text(doc.splitTextToSize(comityData.nextReunion, 160), 25, h);
+      doc.save(comityData.pvname + ".pdf");
+      //doc.output("dataurlnewwindow");
     },
   },
 };

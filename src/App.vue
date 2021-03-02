@@ -74,7 +74,22 @@
         <h2 class="font-weight-regular">Fanfare Management</h2>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      Alpha - Version 1.2
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon class="mx-4" v-bind="attrs" v-on="on">
+            mdi-help-circle-outline
+          </v-icon>
+        </template>
+        <h4>PV Maker</h4>
+        <ul>
+          <li>Ajout de l'option de sauvegarde</li>
+          <li>Ajout d'une confirmation lors de la suppression</li>
+          <li>Changement du design des boutons</li>
+          <li>Nombre de lignes des zone de texte adaptées</li>
+          <li>Ajout d'une liste des PV</li>
+        </ul>
+      </v-tooltip>
+      Alpha - Version 1.3
     </v-app-bar>
     <v-content>
       <v-container fluid>
