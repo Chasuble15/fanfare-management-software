@@ -161,10 +161,14 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-btn-toggle v-model="activeButton" @change="resetActiveButton">
-          <v-btn small @click.stop="info(item)">Modifier</v-btn>
-          <v-btn small @click="deleteMember(item)">Supprimer</v-btn>
-        </v-btn-toggle>
+        <div>
+          <v-btn icon small @click.stop.prevent="info(item)"
+            ><v-icon>mdi-pencil-circle</v-icon></v-btn
+          >
+          <v-btn icon small @click.stop.prevent="deleteMember(item)"
+            ><v-icon>mdi-close-circle</v-icon></v-btn
+          >
+        </div>
       </template>
       <template v-slot:footer>
         <v-toolbar flat>

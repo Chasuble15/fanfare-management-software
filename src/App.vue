@@ -26,6 +26,22 @@
             <v-list-item-title>Formation</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item :to="{ path: '/friends' }">
+          <v-list-item-icon>
+            <v-icon>mdi-account-star</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Club des amis</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item :to="{ path: '/ms' }">
+          <v-list-item-icon>
+            <v-icon>mdi-school</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Ecole de musique</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item :to="{ path: '/transcript' }">
           <v-list-item-icon>
             <v-icon>mdi-book-open-outline</v-icon>
@@ -42,25 +58,8 @@
             <v-list-item-title>Inventaire</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item :to="{ path: '/ms' }">
-          <v-list-item-icon>
-            <v-icon>mdi-school</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Ecole de musique</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item :to="{ path: '/club' }">
-          <v-list-item-icon>
-            <v-icon>mdi-account-star</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Club des amis</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
     <v-app-bar app clipped-left>
       <v-img
         contain
@@ -80,6 +79,17 @@
             mdi-help-circle-outline
           </v-icon>
         </template>
+        <h3>V1.4</h3>
+        <h4>General</h4>
+        <ul>
+          <li>Modification du menu principal</li>
+          <li>Modification des bontons d'action</li>
+        </ul>
+        <h4>Club des amis</h4>
+        <ul>
+          <li>Ajout d'une data table</li>
+        </ul>
+        <h3>V1.3</h3>
         <h4>PV Maker</h4>
         <ul>
           <li>Ajout de l'option de sauvegarde</li>
@@ -89,7 +99,7 @@
           <li>Ajout d'une liste des PV</li>
         </ul>
       </v-tooltip>
-      Alpha - Version 1.3
+      Alpha - Version 1.4
     </v-app-bar>
     <v-content>
       <v-container fluid>

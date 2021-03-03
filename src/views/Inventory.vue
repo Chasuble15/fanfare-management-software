@@ -184,10 +184,14 @@
 
       <!-- Colonne Modifier/Supprimer -->
       <template v-slot:item.actions="{ item }">
-        <v-btn-toggle v-model="activeButton" @change="resetActiveButton">
-          <v-btn small @click.stop="editModal(item)">Modifier</v-btn>
-          <v-btn small @click="deleteInstr(item)">Supprimer</v-btn>
-        </v-btn-toggle>
+        <div>
+          <v-btn icon small @click.stop.prevent="editModal(item)"
+            ><v-icon>mdi-pencil-circle</v-icon></v-btn
+          >
+          <v-btn icon small @click.stop.prevent="deleteInstr(item)"
+            ><v-icon>mdi-close-circle</v-icon></v-btn
+          >
+        </div>
       </template>
     </v-data-table>
 
@@ -508,8 +512,8 @@ export default {
       return `${day}/${month}/${year}`;
     },
     getDetail(value) {
-      console.log(value)
-    }
+      console.log(value);
+    },
   },
 };
 </script>

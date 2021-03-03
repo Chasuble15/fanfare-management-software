@@ -42,14 +42,14 @@
       <v-toolbar flat color="blue-grey" dark>
         <v-toolbar-title>Réunion du comité</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn class="mx-2" @click="updateData"
+        <v-btn icon rounded class="mx-1" @click="updateData"
           ><v-icon>mdi-content-save</v-icon></v-btn
         >
-        <v-btn class="mx-2" @click="clearData"
-          ><v-icon>mdi-broom</v-icon></v-btn
-        >
-        <v-btn class="mx-2" @click="menu = true"
+        <v-btn icon rounded class="mx-1" @click="menu = true"
           ><v-icon>mdi-folder-open</v-icon></v-btn
+        >
+        <v-btn icon rounded class="mx-1" @click="clearData"
+          ><v-icon>mdi-broom</v-icon></v-btn
         >
       </v-toolbar>
       <v-card-text>
@@ -127,8 +127,14 @@
                   ></v-text-field>
                 </v-col>
                 <v-col class="text-right">
-                  <v-btn @click="removeBloc(u)" class="mx-2" dark color="red">
-                    <v-icon>mdi-close</v-icon>
+                  <v-btn
+                    rounded
+                    @click="removeBloc(u)"
+                    class="mx-2"
+                    dark
+                    color="red"
+                  >
+                    <v-icon>mdi-close-circle</v-icon>
                     <div class="mx-2">Question posée</div>
                   </v-btn>
                 </v-col>
@@ -157,7 +163,7 @@
                       dense
                       v-model="comityData.questions[u].content[i]"
                       filled
-                      append-icon="mdi-close"
+                      append-icon="mdi-close-circle"
                       @click:append="removeQuestion(u, i)"
                     ></v-textarea>
                   </v-list-item-content>
@@ -170,21 +176,22 @@
               class="mx-2"
               dark
               color="indigo"
+              rounded
             >
               <v-icon dark>mdi-plus</v-icon>
             </v-btn>
             <v-btn
               @click="edit(u)"
               v-show="comityData.questions[u].edit"
-              color="blue-grey"
-              dark
-              class="my-6"
-              >Valider</v-btn
-            >
+              color="success"
+              class="my-2"
+              rounded
+              ><v-icon dark> mdi-check</v-icon>
+            </v-btn>
           </v-card>
         </v-container>
-        <v-btn @click="addBloc" class="mx-2" dark color="indigo">
-          <v-icon>mdi-plus</v-icon>
+        <v-btn rounded @click="addBloc" class="mx-2" dark color="indigo">
+          <v-icon>mdi-plus-circle</v-icon>
           <div class="mx-2">Question posée</div>
         </v-btn>
         <v-card-title>Tâches à effectuer prochainement</v-card-title>
@@ -210,13 +217,13 @@
               placeholder="Tâche..."
               dense
               v-model="item['1']"
-              append-icon="mdi-close"
+              append-icon="mdi-close-circle"
               @click:append="removeTask(item)"
             ></v-textarea>
           </template>
         </v-data-table>
-        <v-btn @click="addTask" class="mx-2" dark color="indigo">
-          <v-icon>mdi-plus</v-icon>
+        <v-btn rounded @click="addTask" class="my-2" dark color="indigo">
+          <v-icon>mdi-plus-circle</v-icon>
           <div class="mx-2">tâche</div>
         </v-btn>
         <v-card-title>Prochaine réunion</v-card-title>
@@ -237,7 +244,12 @@
             ></v-text-field>
           </v-col>
           <v-col sm="2">
-            <v-btn color="dark-grey" class="text-center" dark @click="savepv"
+            <v-btn
+              rounded
+              color="dark-grey"
+              class="text-center"
+              dark
+              @click="savepv"
               >Sauvegarder</v-btn
             >
           </v-col>

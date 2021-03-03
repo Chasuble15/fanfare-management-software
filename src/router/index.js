@@ -33,6 +33,11 @@ const routes = [{
     path: '/ms',
     name: 'ms',
     component: () => import('../views/MusicSchool.vue')
+  },
+  {
+    path: '/friends',
+    name: 'Friends',
+    component: () => import('../views/Friends.vue')
   }
 ]
 
