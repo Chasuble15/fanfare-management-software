@@ -58,6 +58,14 @@
             <v-list-item-title>Inventaire</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item :to="{ path: '/calendar' }">
+          <v-list-item-icon>
+            <v-icon>mdi-calendar</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Calendrier</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar app clipped-left>
@@ -79,6 +87,11 @@
             mdi-help-circle-outline
           </v-icon>
         </template>
+        <h3>V1.5</h3>
+        <h4>Tableau de bord</h4>
+        <ul>
+          <li>Ajout du prochain anniversaire</li>
+        </ul>
         <h3>V1.4</h3>
         <h4>General</h4>
         <ul>
@@ -99,7 +112,7 @@
           <li>Ajout d'une liste des PV</li>
         </ul>
       </v-tooltip>
-      Alpha - Version 1.4
+      Alpha - Version 1.5
     </v-app-bar>
     <v-content>
       <v-container fluid>

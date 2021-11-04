@@ -154,18 +154,18 @@
         </div>
       </template>
 
-      <!-- <template v-slot:footer>
+      <template v-slot:footer>
         <v-toolbar flat>
           <download-excel
             class="export-excel-wrapper"
-            :data="memberList"
+            :data="friendsList"
             :fields="json_field"
             :name="filename"
           >
             <v-btn>Exporter vers Excel</v-btn>
           </download-excel>
         </v-toolbar>
-      </template> -->
+      </template>
     </v-data-table>
 
     <!-- Modifier un membre dialog -->
@@ -252,6 +252,16 @@
             </v-col>
           </v-row>
         </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="cancelModify"
+            >Annuler</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="modifyMember"
+            >Modifier</v-btn
+          >
+        </v-card-actions>
       </v-card>
     </v-dialog>
 
@@ -349,10 +359,8 @@ export default {
       json_field: {
         Prenom: "firstName",
         Nom: "lastName",
-        Poste: "post",
+        Type: "type",
         Email: "email",
-        "Date de naissance": "birthday",
-        "Date d' entree": "entry",
         Rue: "rue",
         NPA: "npa",
         Commune: "commune",
@@ -376,7 +384,7 @@ export default {
         today.getFullYear();
       const time = today.getHours() + "h" + today.getMinutes();
       const dateTime = date + "_" + time;
-      return "Liste_des_membres_" + dateTime;
+      return "Liste_club_des_amis_" + dateTime;
     },
   },
 
@@ -387,23 +395,18 @@ export default {
       });
     },
     modifyMember() {
-      this.$firestore.friendsList.doc(this.infoModal.key).set(this.infoModal);
+      this.$firestore.friendsList
+        .doc(this.infoModal[".key"])
+        .set(this.infoModal)
+        .then(() => {
+          this.modifDialog = false;
+          this.infoModal = {};
+        });
     },
     cancelModify() {
       this.modifDialog = false;
       //Reset modal
-      this.infoModal.firstName = "";
-      this.infoModal.lastName = "";
-      this.infoModal.post = "";
-      this.infoModal.email = "";
-      this.infoModal.key = "";
-      this.infoModal.birthday = "";
-      this.infoModal.entry = "";
-      this.infoModal.avatar = "";
-      this.infoModal.rue = "";
-      this.infoModal.npa = "";
-      this.infoModal.commune = "";
-      this.infoModal.phone = "";
+      this.infoModal = null;
     },
 
     info(item) {
